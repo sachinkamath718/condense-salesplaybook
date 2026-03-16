@@ -1,7 +1,7 @@
 import React from 'react';
 import { useGameState } from './GameStateContext';
 import { fullPlaybookData } from '../data/full_playbook';
-import { Lock, CheckCircle, Zap, Target, Trophy, PlayCircle, Cpu } from 'lucide-react';
+import { Lock, CheckCircle, Zap, Target, Trophy, PlayCircle, Cpu, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { RetakeQuizPopup } from './RetakeQuizPopup';
 
@@ -10,7 +10,7 @@ interface GamifiedDashboardProps {
 }
 
 export const GamifiedDashboard: React.FC<GamifiedDashboardProps> = ({ onSelectMission }) => {
-    const { xp, completedMissions, unlockedMissionsCount, missionScores } = useGameState();
+    const { xp, completedMissions, unlockedMissionsCount, missionScores, isFirebaseConfigured } = useGameState();
     const [retakeMissionId, setRetakeMissionId] = React.useState<string | null>(null);
 
     const level = Math.floor(xp / 500) + 1;
@@ -19,6 +19,21 @@ export const GamifiedDashboard: React.FC<GamifiedDashboardProps> = ({ onSelectMi
 
     return (
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-32">
+            
+            {/* Connection Warning */}
+            {!isFirebaseConfigured && (
+                <motion.div 
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    className="mb-8 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center gap-4 text-amber-400"
+                >
+                    <AlertCircle className="w-6 h-6 shrink-0" />
+                    <div>
+                        <p className="font-bold text-sm">Database Not Connected</p>
+                        <p className="text-xs opacity-80">Progress is only being saved locally. Please add your Firebase environment variables to Vercel and Redeploy to enable cloud sync.</p>
+                    </div>
+                </motion.div>
+            )}
 
             {/* Header / Profile Hero */}
             <motion.div

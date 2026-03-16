@@ -14,6 +14,7 @@ interface GameState {
     completeMission: (chapterId: string, score?: number, total?: number) => void;
     recordAnswer: (isCorrect: boolean) => void;
     resetGame: () => void;
+    isFirebaseConfigured: boolean;
 }
 
 const GameContext = createContext<GameState | undefined>(undefined);
@@ -25,6 +26,17 @@ export const GameProvider: React.FC<{ children: React.ReactNode, userId?: string
     const [totalQuestions, setTotalQuestions] = useState(0);
     const [missionScores, setMissionScores] = useState<Record<string, { score: number, total: number }>>({});
     const [isStateLoaded, setIsStateLoaded] = useState(false);
+    const [isFirebaseConfigured, setIsFirebaseConfigured] = useState(false);
+
+    useEffect(() => {
+        // Check if real config is provided (not dummy)
+        const isConfigured = !!import.meta.env.VITE_FIREBASE_API_KEY && 
+                             import.meta.env.VITE_FIREBASE_API_KEY !== "AIzaSyDummyKeyForDevelopment12345";
+        setIsFirebaseConfigured(isConfigured);
+        if (!isConfigured) {
+            console.warn("Firebase is NOT configured with real keys. Data will not persist to the cloud.");
+        }
+    }, []);
 
     const resetGame = () => {
         setXp(0);
@@ -165,7 +177,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode, userId?: string
             addXP,
             completeMission,
             recordAnswer,
-            resetGame
+            resetGame,
+            isFirebaseConfigured
         }}>
             {children}
         </GameContext.Provider>
