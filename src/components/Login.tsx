@@ -2,16 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, ShieldCheck, Cpu, Key, AlertCircle, RefreshCw } from 'lucide-react';
 import { Card } from './Card';
-import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 
 interface LoginProps {
     onStart: (name: string, company: string, isReturning: boolean) => void;
-}
-
-interface UserData {
-    company: string;
-    passcode: string;
 }
 
 export const Login: React.FC<LoginProps> = ({ onStart }) => {
@@ -38,12 +33,11 @@ export const Login: React.FC<LoginProps> = ({ onStart }) => {
         setLoading(true);
 
         try {
-            // FIREBASE FALLBACK: Using localStorage so user can demo app without Firebase keys setup
-            const usersStr = localStorage.getItem('condense_users');
-            const users: Record<string, UserData> = usersStr ? JSON.parse(usersStr) : {};
-
             // Fake loading delay to look cool
             await new Promise(resolve => setTimeout(resolve, 800));
+
+            const userRef = doc(db, 'users', username);
+            const userSnap = await getDoc(userRef);
 
             if (isSignUp) {
                 if (!company.trim()) {
@@ -51,61 +45,49 @@ export const Login: React.FC<LoginProps> = ({ onStart }) => {
                     return;
                 }
 
-                if (users[username]) {
+                if (userSnap.exists()) {
                     setError('Identity already registered. Please authenticate.');
                     setLoading(false);
                     return;
                 }
 
-                users[username] = {
-                    company: company.trim(),
-                    passcode: passcode.trim()
+                // Create new user in Firestore
+                const userData = {
+                    username: username,
+                    companyCode: company.trim(),
+                    passcode: passcode.trim(), // In a real app, this should be hashed
+                    lastActive: serverTimestamp(),
+                    xp: 0,
+                    accuracy: 0,
+                    modulesCompleted: 0,
+                    quizResults: {}
                 };
 
-                localStorage.setItem('condense_users', JSON.stringify(users));
+                await setDoc(userRef, userData);
+                
                 localStorage.setItem('condense_active_session', username);
-
-                // Sync basic user info to Firestore for Admin view
-                try {
-                    await setDoc(doc(db, 'users', username), {
-                        username: username,
-                        companyCode: company.trim(),
-                        lastActive: serverTimestamp()
-                    }, { merge: true });
-                } catch (e) {
-                    console.warn("Firestore user sync skipped:", e);
-                }
-
                 onStart(username, company.trim(), false);
             } else {
                 // Log In
-                const user = users[username];
-                if (!user) {
+                if (!userSnap.exists()) {
                     setError('Identity not found. Please initialize access.');
                     setLoading(false);
                     return;
                 }
 
-                if (user.passcode !== passcode.trim()) {
+                const userData = userSnap.data();
+                if (userData.passcode !== passcode.trim()) {
                     setError('Invalid Secure Passcode.');
                     setLoading(false);
                     return;
                 }
 
                 localStorage.setItem('condense_active_session', username);
+                
+                // Update last active
+                await setDoc(userRef, { lastActive: serverTimestamp() }, { merge: true });
 
-                // Sync basic user info to Firestore for Admin view
-                try {
-                    await setDoc(doc(db, 'users', username), {
-                        username: username,
-                        companyCode: user.company,
-                        lastActive: serverTimestamp()
-                    }, { merge: true });
-                } catch (e) {
-                    console.warn("Firestore user sync skipped:", e);
-                }
-
-                onStart(username, user.company, true);
+                onStart(username, userData.companyCode, true);
             }
         } catch (err) {
             console.error("Login Error", err);

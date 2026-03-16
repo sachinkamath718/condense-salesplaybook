@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 
 interface GameState {
@@ -35,31 +35,61 @@ export const GameProvider: React.FC<{ children: React.ReactNode, userId?: string
     };
 
     useEffect(() => {
-        const timer = setTimeout(() => {
+        const fetchState = async () => {
             if (!userId) {
                 resetGame();
                 setIsStateLoaded(true);
                 return;
             }
 
-            const savedStateStr = localStorage.getItem(`condense_state_${userId}`);
-            if (savedStateStr) {
-                try {
-                    const state = JSON.parse(savedStateStr);
-                    setXp(state.xp || 0);
-                    setCompletedMissions(state.completedMissions || []);
-                    setCorrectAnswers(state.correctAnswers || 0);
-                    setTotalQuestions(state.totalQuestions || 0);
-                    setMissionScores(state.missionScores || {});
-                } catch (err) {
-                    console.error("Failed to parse saved game state", err);
+            try {
+                // First try Firestore (Source of Truth)
+                const userRef = doc(db, 'users', userId);
+                const userSnap = await getDoc(userRef);
+
+                if (userSnap.exists()) {
+                    const data = userSnap.data();
+                    setXp(data.xp || 0);
+                    setCompletedMissions(data.completedMissions || []);
+                    setCorrectAnswers(data.correctAnswers || 0);
+                    setTotalQuestions(data.totalQuestions || 0);
+                    setMissionScores(data.quizResults || {});
+                } else {
+                    // Fallback to localStorage if Firestore is empty (legacy users)
+                    const savedStateStr = localStorage.getItem(`condense_state_${userId}`);
+                    if (savedStateStr) {
+                        const state = JSON.parse(savedStateStr);
+                        setXp(state.xp || 0);
+                        setCompletedMissions(state.completedMissions || []);
+                        setCorrectAnswers(state.correctAnswers || 0);
+                        setTotalQuestions(state.totalQuestions || 0);
+                        setMissionScores(state.missionScores || {});
+                    } else {
+                        resetGame();
+                    }
                 }
-            } else {
-                resetGame();
+            } catch (err) {
+                console.error("Failed to fetch game state from Firestore", err);
+                // Last ditch fallback to local storage
+                const savedStateStr = localStorage.getItem(`condense_state_${userId}`);
+                if (savedStateStr) {
+                    try {
+                        const state = JSON.parse(savedStateStr);
+                        setXp(state.xp || 0);
+                        setCompletedMissions(state.completedMissions || []);
+                        setCorrectAnswers(state.correctAnswers || 0);
+                        setTotalQuestions(state.totalQuestions || 0);
+                        setMissionScores(state.missionScores || {});
+                    } catch (e) {
+                        console.error("Local storage fallback failed", e);
+                    }
+                }
+            } finally {
+                setIsStateLoaded(true);
             }
-            setIsStateLoaded(true);
-        }, 0);
-        return () => clearTimeout(timer);
+        };
+
+        fetchState();
     }, [userId]);
 
     useEffect(() => {
@@ -83,11 +113,12 @@ export const GameProvider: React.FC<{ children: React.ReactNode, userId?: string
                     username: userId,
                     xp: xp,
                     accuracy: totalQuestions > 0 ? (correctAnswers / totalQuestions) * 100 : 0,
+                    correctAnswers: correctAnswers,
+                    totalQuestions: totalQuestions,
+                    completedMissions: completedMissions,
                     modulesCompleted: completedMissions.length,
                     lastActive: serverTimestamp(),
                     quizResults: missionScores,
-                    // We don't have companyCode in the state context yet, 
-                    // ideally this would be passed from Login or fetched from a user profile doc
                 }, { merge: true });
             } catch (err) {
                 // Silently fail if Firebase isn't configured yet
