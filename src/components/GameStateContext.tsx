@@ -48,6 +48,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode, userId?: string
 
     useEffect(() => {
         const fetchState = async () => {
+            setIsStateLoaded(false); // Lock sync while fetching new user data
             if (!userId) {
                 resetGame();
                 setIsStateLoaded(true);
