@@ -178,7 +178,9 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({ chapterId, onComplete })
         );
     }
     if (showResult) {
-        const isPassed = sessionScore >= 4;
+        const passingThreshold = 0.65;
+        const miniCorrectNeeded = Math.ceil(quiz!.length * passingThreshold);
+        const isPassed = sessionScore >= miniCorrectNeeded;
         return (
             <div className="max-w-3xl mx-auto px-4 py-20 text-center relative z-20">
                 <motion.div
@@ -204,7 +206,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({ chapterId, onComplete })
 
                         <p className="text-xl text-zinc-300 mb-8">
                             You scored <span className={`font-bold ${isPassed ? 'text-emerald-400' : 'text-red-400'}`}>{sessionScore}</span> out of {quiz!.length} questions correctly.
-                            {isPassed ? '' : ' (Requires 4+ to pass)'}
+                            {!isPassed && ` (Requires ${miniCorrectNeeded} correct answers to pass - 65%)`}
                         </p>
 
                         {isPassed && (

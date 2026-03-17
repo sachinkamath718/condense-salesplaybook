@@ -68,40 +68,27 @@ export const fullPlaybookData: Chapter[] = [
                     type: "paragraph",
                     content: "Consider the typical evolution of a data platform. It begins with a single use case: perhaps replicating database changes via CDC (Change Data Capture) or streaming clickstream analytics. A small cluster is spun up, a few producers and consumers are written, and it works perfectly. However, success breeds complexity. As more teams realize the value of real-time insights, the number of topics, partitions, and custom microservices explodes exponentially. What was once an elegant event bus rapidly devolves into an unmanageable web of interdependent services, each requiring its own CI/CD pipelines, scaling policies, and observability stacks."
                 }
+            ],
+            [
+                {
+                    type: "deep-dive",
+                    title: "The BYOC Advantage",
+                    content: "In a Bring Your Own Cloud (BYOC) model, the infrastructure runs within the customer's perimeter. This is critical for industries like finance, healthcare, and automotive where data residency and security are non-negotiable. Condense provides the control of a self-hosted solution with the ease-of-use of a managed SaaS platform."
+                },
+                {
+                    type: "paragraph",
+                    content: "The 'Logic Plane' is the core innovation of Condense. Instead of managing dozens of individual microservices that each perform a small piece of the pipeline (like enrichment or routing), Condense offers a unified processing engine. This engine is designed to handle high-throughput, low-latency workloads with zero data loss, speaking the standard Kafka protocol natively."
+                }
+            ],
+            [
+                {
+                    type: "action-block",
+                    title: "Why Kafka-Native?",
+                    content: "Being Kafka-native means Condense doesn't just 'connect' to Kafka; it integrates deeply with the Kafka protocol and ecosystem. This ensures compatibility with existing tools, simplifies migrations, and allows developers to leverage their existing Kafka skills while benefiting from Condense's high-level abstractions."
+                }
             ]
-        ],
-        quiz: [
-            {
-                question: "What does BYOC stand for in the Condense platform?",
-                options: ["Build Your Own Cloud", "Bring Your Own Cloud", "Buy Your Own Cloud", "Boost Your Own Cloud"],
-                correctAnswerIndex: 1,
-                explanation: "Easy: BYOC means software runs in your account for security."
-            },
-            {
-                question: "Which operational hurdle does Condense primarily eliminate?",
-                options: ["Microservice sprawl", "Cloud provider fees", "Developer hiring", "Hardware failures"],
-                correctAnswerIndex: 0,
-                explanation: "Medium: We unify the logic tier to stop 'microservice sprawl'."
-            },
-            {
-                question: "Why does successful data streaming lead to complexity?",
-                options: ["Too many topics", "High storage cost", "Explosion of services", "Slow internet"],
-                correctAnswerIndex: 2,
-                explanation: "Medium: Success leads to more custom microservices for every rule."
-            },
-            {
-                question: "What is the strategic choice between BIT and SIT for enterprises?",
-                options: ["Stitch-it-Together", "Build-it-Today", "Buy-it-Together", "Share-it-Totally"],
-                correctAnswerIndex: 2,
-                explanation: "Hard: Buying a unified platform (BIT) allows for focused business growth."
-            },
-            {
-                question: "What does it mean for Condense to be 'Kafka-native'?",
-                options: ["Uses own protocol", "Direct Kafka compatibility", "Only runs on Java", "Requires custom hardware"],
-                correctAnswerIndex: 1,
-                explanation: "Hard: We speak standard Kafka, ensuring no translation lag."
-            }
         ]
+        // Quiz removed as per user request
     },
     {
         id: "ch-1",
@@ -254,34 +241,52 @@ export const fullPlaybookData: Chapter[] = [
         ],
         quiz: [
             {
-                question: "Which layer deliver events reliably but lacks business logic?",
-                options: ["Kafka Layer", "Ingestion Layer", "Processing Layer", "Storage Layer"],
+                question: "In a fragmented cloud architecture, which layer delivers events reliably but completely lacks the ability to apply business logic or routing?",
+                options: ["Application Layer", "Ingestion Layer", "Processing Layer", "Transformation Layer"],
                 correctAnswerIndex: 1,
-                explanation: "Easy: Ingestion tools like Kinesis move data but don't 'think'."
+                explanation: "The Ingestion layer (e.g., Kinesis) is a simple delivery mechanism; it doesn't 'understand' the data it moves."
             },
             {
-                question: "What is the primary danger of SQL-based streaming at scale?",
-                options: ["Slow queries", "High RAM use", "Fragile rippling changes", "No security"],
+                question: "Why does relying on SQL/KSQL transformation graphs often become dangerous at enterprise scale?",
+                options: ["SQL is too slow for real-time", "It requires specialized hardware", "Changes ripple across tightly coupled dependencies", "It lacks basic security features"],
                 correctAnswerIndex: 2,
-                explanation: "Medium: A minor field change can break dozen downstream jobs."
+                explanation: "In large systems, a single table or query change can break dozens of downstream dependencies, creating a fragile environment."
             },
             {
-                question: "How does 'Redundant Data Movement' impact a mobility platform?",
-                options: ["More security", "Cumulative latency", "Better backups", "Easy scaling"],
+                question: "What is the primary driver of the 'Infrastructure Glue Tax' in modern streaming systems?",
+                options: ["Cloud provider license fees", "The manual effort of stitching multiple services together", "The cost of high-speed internet connections", "The salary of a junior database administrator"],
                 correctAnswerIndex: 1,
-                explanation: "Medium: Every 'hop' adds cost and latency."
+                explanation: "The 'tax' is the massive engineering effort spent managing the connections between tools rather than building features."
             },
             {
-                question: "What is a major sign of 'Microservice Sprawl'?",
-                options: ["Low CPU use", "High cloud bill", "Deployment dependency", "Too many SQL users"],
+                question: "Which of these is a direct consequence of 'Redundant Data Movement' across multiple cloud services?",
+                options: ["Improved data redundancy", "Cumulative latency and increased cost", "Better observability for the SRE team", "Higher compression ratios for storage"],
+                correctAnswerIndex: 1,
+                explanation: "Every 'hop' data takes across services adds both processing time (latency) and transfer/compute costs."
+            },
+            {
+                question: "A major sign of 'Microservice Sprawl' in a data pipeline is:",
+                options: ["Low CPU utilization", "Dozens of isolated services each needing separate scaling policies", "A single unified management dashboard", "The use of an open-source Kafka broker"],
+                correctAnswerIndex: 1,
+                explanation: "Sprawl happens when every new business rule requires a new, independent service to be managed and scaled."
+            },
+            {
+                question: "Fragmented observability is particularly painful for SRE teams because:",
+                options: ["It makes the dashboard look too colorful", "It requires navigating multiple disjointed tools to find a root cause", "It reduces the total throughput of the Kafka cluster", "Cloud providers charge more for multiple log groups"],
+                correctAnswerIndex: 1,
+                explanation: "When metrics, logs, and traces are in different tools, the Time to Repair (MTTR) increases significantly."
+            },
+            {
+                question: "What happens when 'Scaling Silos' exist in an architecture?",
+                options: ["Components scale automatically together", "One spike in data can crush a single, un-scaled component creating backpressure", "The system becomes immune to data bursts", "Cloud costs are automatically optimized"],
+                correctAnswerIndex: 1,
+                explanation: "If the Ingestion layer scales but the Processing layer doesn't, the latter gets overwhelmed, causing lag."
+            },
+            {
+                question: "Managed Kafka services like MSK remove broker management, but what do they typically NOT solve?",
+                options: ["High availability", "Durability and ordering", "End-to-end pipeline orchestration and logic", "Throughput scaling"],
                 correctAnswerIndex: 2,
-                explanation: "Hard: Simple changes requiring multiple siloed teams to coordinate."
-            },
-            {
-                question: "Why is fragmented observability a problem for SRE teams?",
-                options: ["Higher costs", "Multiple tool tabs", "Lower throughput", "Insecure links"],
-                correctAnswerIndex: 1,
-                explanation: "Hard: Troubleshooting requires navigating disjointed, siloed tools."
+                explanation: "Managed brokers handle the 'storage' of streams, but the 'logic' of the pipeline remains the customer's burden."
             }
         ]
     },
@@ -346,34 +351,64 @@ export const fullPlaybookData: Chapter[] = [
         ],
         quiz: [
             {
-                question: "Force 1: Why is there a 'Tempo Mismatch'?",
-                options: ["Kafka is query-driven", "Cloud Functions are continuous", "Kafka flows, Functions burst", "Both are query-driven"],
-                correctAnswerIndex: 2,
-                explanation: "Easy: Continuous Kafka flows vs bursty Functions creates a mismatch."
-            },
-            {
-                question: "Force 5: Why is scaling on CPU alone risky?",
-                options: ["Memory is too cheap", "Lag can grow while CPU is low", "CPU metrics are fake", "It slows down Kafka"],
+                question: "Force 1 describes a 'Tempo Mismatch' between Kafka and Cloud Functions. Why does this mismatch create operational instability?",
+                options: ["Kafka is too slow", "Continuous flows meet bursty execution", "Functions are always running", "Kafka requires more RAM"],
                 correctAnswerIndex: 1,
-                explanation: "Medium: CPU might be low while partition lag grows exponentially."
+                explanation: "Kafka is a continuous firehose; Cloud Functions are intermittent 'bursts'. Connecting them requires complex buffer management."
             },
             {
-                question: "Force 6: What is a major result of fractured observability?",
-                options: ["Higher MTTR", "Faster debugging", "Cheaper licenses", "Better security"],
-                correctAnswerIndex: 0,
-                explanation: "Medium: Navigating multiple tabs increases the 'time to repair'."
+                question: "Force 5: What is the primary risk of scaling data processing components based solely on CPU utilization signals?",
+                options: ["CPU metrics are often manipulated by cloud providers", "Lag can grow exponentially even while CPU usage remains low", "It causes the Kafka broker to crash", "Servers will overheat and shutdown"],
+                correctAnswerIndex: 1,
+                explanation: "If a process is bottlenecked by I/O or single-threaded logic, CPU stays low while data lag (and business delay) spikes."
             },
             {
-                question: "Force 7: What does 'intricate dependencies' make difficult?",
-                options: ["Scaling servers", "Adding more data", "Changing business rules", "Buying cloud space"],
+                question: "According to Force 6, how does fractured observability specifically impact the 'Mean Time to Repair' (MTTR) during a production outage?",
+                options: ["It reduces licensing costs", "It forces engineers to navigate multiple disjointed tools to find the root cause", "It automatically fixes the bug using AI", "It decreases the number of support tickets"],
+                correctAnswerIndex: 1,
+                explanation: "Searching through five different dashboards (metrics, logs, traces) to find one error significantly delays recovery."
+            },
+            {
+                question: "Force 7: Why are 'Intricate Dependencies' considered a high-risk factor for real-time change management?",
+                options: ["Because Kafka topics are deleted automatically", "A small field change can ripple through SQL flows and break downstream logic", "It prevents developers from using Git", "It makes the cloud bill unpredictable"],
+                correctAnswerIndex: 1,
+                explanation: "In stitched-together systems, there is no single 'contract'; one tiny schema change can break a dozen separate services."
+            },
+            {
+                question: "How is 'Accumulated Latency' (Force 4) correctly defined in a multi-step streaming pipeline?",
+                options: ["The speed of the public internet", "The sum of all processing, retry, and I/O delays across every 'hop'", "The distance between data centers", "The version of the Kafka protocol being used"],
+                correctAnswerIndex: 1,
+                explanation: "Latency isn't just one number; it's the cumulative delay added by every tool data passes through."
+            },
+            {
+                question: "Force 2: What is 'Scattered Memory' in a distributed streaming architecture?",
+                options: ["Losing your password", "State being split across Kafka, SQL tables, and various caches", "Filling up the server's hard drive", "Using too many browser tabs"],
+                correctAnswerIndex: 1,
+                explanation: "When aggregations (like windowed counts) live in three different places, keeping them consistent is a nightmare."
+            },
+            {
+                question: "Force 3: 'Logic Sprawl' occurs when business rules are spread across:",
+                options: ["Public marketing websites", "SQL, custom microservices, and cloud functions", "The internal company wiki", "Email newsletters"],
+                correctAnswerIndex: 1,
+                explanation: "Scattered logic means no one team knows 'why' a data point was transformed a certain way."
+            },
+            {
+                question: "A traffic burst occurs. The ingestion layer handles it, but the consumers lag. Which Force is being demonstrated?",
+                options: ["Force 1: Tempo Mismatch", "Force 4: Accumulated Latency", "Force 5: Misaligned Scaling", "Force 2: Scattered Memory"],
                 correctAnswerIndex: 2,
-                explanation: "Hard: A small field change can ripple and break complex logic."
+                explanation: "Different components reacting to different signals (partitions vs CPU) leads to downstream bottlenecks."
             },
             {
-                question: "How is 'Accumulated Latency' (Force 4) calculated?",
-                options: ["Sum of all 'hops'", "Broker disk speed", "Public internet lag", "CPU cycle count"],
-                correctAnswerIndex: 0,
-                explanation: "Hard: It is the total delay across the entire multi-step pipeline."
+                question: "Why does Force 6 increase the coordination load between teams?",
+                options: ["More meetings are required", "Ownership is fragmented across different monitoring tools", "Teams use different programming languages", "Everyone wants to be the admin"],
+                correctAnswerIndex: 1,
+                explanation: "If Team A owns the logs and Team B owns the metrics, they MUST coordinate just to see the full picture."
+            },
+            {
+                question: "What is the ultimate 'business impact' of these 7 Natural Forces combined?",
+                options: ["Lower cloud bills", "Slower delivery cycles and higher operational risk", "Faster feature rollout", "Zero maintenance overhead"],
+                correctAnswerIndex: 1,
+                explanation: "The combined friction of these forces makes the architecture 'brittle' and resistant to innovation."
             }
         ]
     },
@@ -486,48 +521,76 @@ export const fullPlaybookData: Chapter[] = [
                     ]
                 },
                 {
-                    type: "quote",
-                    content: "Condense does not replace what teams know, it simplifies how they apply it. It moves the focus from 'managing infrastructure' to 'delivering data logic'."
-                }
-            ],
-            [
-                {
-                    type: "action-block",
+                    type: "list",
                     title: "What Condense Replaces (Jobs-to-Be-Done)",
-                    content: "Teams move from: Operating Kafka + Managing Microservices + Maintaining SQL Flows + Running Cloud Functions + Handling Routing + Monitoring multiple tools...\n\nTo: ONE managed Kafka + ONE execution engine + ONE place for logic + ONE operational surface."
+                    content: [
+                        "Consolidates 'Stitched-Together' services into one plane.",
+                        "Replaces manual bridge building between cloud silos.",
+                        "Automates the 'Infrastructure Glue' that consumes engineering time."
+                    ]
                 }
             ]
         ],
         quiz: [
             {
-                question: "Where does Condense run in the BYOC model?",
-                options: ["On Zeliot's servers", "In the public data center", "Inside customer's VPC", "On local device"],
+                question: "What is the primary security advantage of the Condense BYOC (Bring Your Own Cloud) model?",
+                options: ["Data is stored on public servers", "Data never leaves the customer's cloud perimeter", "AI monitors the data in the US", "It requires no passwords"],
+                correctAnswerIndex: 1,
+                explanation: "In BYOC, the software comes to the data, not vice-versa, ensuring full compliance and residency."
+            },
+            {
+                question: "How does the 'Single Motion' pitch describe the Condense deployment experience to an architect?",
+                options: ["Deploying one server at a time", "Managing separate Jira cards for every tool", "Defining the pipeline where the platform handles the infrastructure glue", "Manually writing connection scripts for every VPC"],
                 correctAnswerIndex: 2,
-                explanation: "Easy: It runs inside the organization's own cloud boundary."
+                explanation: "Condense automates the 'plumbing'; the designer describes the flow, and the system handles the provisioning."
             },
             {
-                question: "What is the 'Single Motion' pitch for engineering?",
-                options: ["One button deployment", "Declarative pipelines", "Unified Jira boards", "Faster cloud migration"],
+                question: "Why is the Condense AI referred to as a 'Force Multiplier' for existing engineering teams?",
+                options: ["It writes all the code autonomously", "It acts as a senior advisor for junior devs and an ops assistant for seniors", "It replaces the need for an SRE team", "It increases cloud costs by 2x"],
                 correctAnswerIndex: 1,
-                explanation: "Medium: Defining 'Ingest -> Logic -> Delivery' as one unit."
+                explanation: "AI empowers humans to work faster and smarter, drastically reducing the 'toil' of debugging and coding."
             },
             {
-                question: "Why is the AI called a 'Force Multiplier'?",
-                options: ["Doubles throughput", "Assists junior engineers", "Scales partitions", "Replaces marketing team"],
+                question: "In Section 3, how does a 'Unified Processing Plane' specifically reduce the Total Cost of Ownership (TCO)?",
+                options: ["By using cheaper hard drives", "By consolidating dozens of fragmented services into one efficient engine", "By eliminating the need for any cloud provider", "By reducing the salary of the CEO"],
                 correctAnswerIndex: 1,
-                explanation: "Medium: AI helps with ops and coding to speed up humans."
+                explanation: "Removing 10 microservices and replacing them with one plane reduces compute, management, and licensing overhead."
             },
             {
-                question: "How does a 'Unified Processing Plane' reduce TCO?",
-                options: ["Zero SRE headcount", "Consolidating services", "Free cloud credits", "Smaller Kafka topics"],
+                question: "What does it mean for Condense to be 'Kafka-native' at the architecture level?",
+                options: ["It uses a slow adapter to talk to Kafka", "It speaks standard Kafka natively, avoiding translation lag", "It only works with Java 8", "It requires a special license from Apache"],
                 correctAnswerIndex: 1,
-                explanation: "Hard: Replacing many microservices with one efficient runtime."
+                explanation: "Deep integration means no overhead, no proprietary protocols, and instant compatibility with the Kafka ecosystem."
             },
             {
-                question: "Why align compute with Kafka partitions?",
-                options: ["One server per topic", "Avoid data shuffles", "Meet SOC2 requirements", "Support 10k producers"],
+                question: "How does Condense ensure 'Modular Logic' remains manageable as a project grows?",
+                options: ["By banning new code from being written", "Through visual no-code blocks integrated with Git version control", "By storing all code in a single text file", "By requiring senior approval for every line"],
                 correctAnswerIndex: 1,
-                explanation: "Hard: Local processing ensures predictable, linear scaling."
+                explanation: "Combining the ease of 'No-Code' with the safety of 'Git' provides the best of both worlds for scalability."
+            },
+            {
+                question: "What operational task does Condense perform for Kafka that usually takes a dedicated SRE team?",
+                options: ["Writing marketing emails", "Provisioning, scaling, balancing, and failover management", "Choosing the color of the office carpet", "Hiring new engineers"],
+                correctAnswerIndex: 1,
+                explanation: "Condense handles the 'heavy lifting' of Kafka operations while keeping the cluster inside the customer's VPC."
+            },
+            {
+                question: "Why does aligning compute with Kafka partitions result in 'Predictable Scaling'?",
+                options: ["It makes the servers look neat", "It avoids expensive data shuffles and network bottlenecks", "It is required for GDPR compliance", "It uses more CPU cycles"],
+                correctAnswerIndex: 1,
+                explanation: "Local processing (partition-aligned) ensures that as data grows, you simply add more horizontal units linearly."
+            },
+            {
+                question: "Which of these traditional software categories does Condense 'consume' or replace?",
+                options: ["Email clients", "Fragmented pipeline orchestration and managed Kafka services", "Video editing software", "HR management systems"],
+                correctAnswerIndex: 1,
+                explanation: "Condense unifies several distinct layers of the data stack into a single, cohesive platform."
+            },
+            {
+                question: "Condense is described as moving the focus from 'managing infrastructure' to:",
+                options: ["Managing personnel", "Delivering data logic", "Buying more cloud credits", "Writing documentation"],
+                correctAnswerIndex: 1,
+                explanation: "The value is in the 'what' (the logic), not the 'how' (the infrastructure setup)."
             }
         ]
     },
@@ -644,92 +707,52 @@ export const fullPlaybookData: Chapter[] = [
         ],
         quiz: [
             {
-                question: "While looking for prospects, you notice an engineering blog describing a transition from a 'monolithic SQL streaming application' to a 'decoupled event processor.' Why is this a strong signal for Condense?",
-                options: [
-                    "It shows they are moving away from Kafka and might need a new message broker.",
-                    "The transition indicates they are suffering from the 'Force 2' (Scattered Memory) and likely need a unified state management layer.",
-                    "It means they have more than 100 developers, which is the minimum headcount for a Condense deal.",
-                    "Decoupled processors are inherently slower than monolithic ones, requiring Zeliot's optimization."
-                ],
+                question: "While identifying prospects, you find a company transitioning from a 'monolithic SQL streaming application' to 'decoupled event processors.' Why is this a strong signal for Condense?",
+                options: ["They are moving away from Kafka", "They are likely suffering from Force 2 (Scattered Memory) and need unified state", "They have too many developers", "Decoupled processors are inherently slower than monolithic ones"],
                 correctAnswerIndex: 1,
-                explanation: "Decoupling is healthy but creates fragmented state ('Force 2'). Condense provides the unified plane to manage that state while keeping the architectural benefits of decoupling."
+                explanation: "Decoupling creates fragmented state. Condense provides a unified plane to manage that state while keeping the architectural benefits of decoupling."
             },
             {
-                question: "A prospect mentions that 'data residency is our #1 board-level risk this year.' Which Condense feature is the 'silver bullet' here?",
-                options: [
-                    "The AI-powered automated log analysis for quick troubleshooting.",
-                    "The BYOC (Bring Your Own Cloud) model where data never leaves the customer's perimeter.",
-                    "The ability to encrypt data using AES-256 during Kafka ingestion.",
-                    "Native integration with multiple third-party identity providers (IDPs)."
-                ],
+                question: "A prospect states that 'Data residency is our #1 board-level risk this year.' Which Condense offering is the most critical to highlight?",
+                options: ["AI-powered log analysis", "The BYOC (Bring Your Own Cloud) model where data never leaves their perimeter", "AES-256 encryption at rest", "Native integration with third-party identity providers"],
                 correctAnswerIndex: 1,
-                explanation: "For board-level residency risk, SaaS is often a non-starter. BYOC is the only architecture that satisfies this strict compliance requirement."
+                explanation: "For strict residency risk, SaaS is often rejected. BYOC is the only architecture that ensures data never leaves the customer's VPC."
             },
             {
-                question: "What specific operational pain point is 'Multi-Team Involvement' in a simple pipeline update a proxy for?",
-                options: [
-                    "High employee engagement and strong cross-functional culture.",
-                    "Fragmented ownership and high coordination overhead (infrastructure glue tax).",
-                    "A requirement for quarterly security audits by the SRE team.",
-                    "The use of multiple programming languages within the same data pipeline."
-                ],
+                question: "What specific operational bottleneck is 'Multi-Team Involvement' in a simple pipeline update a proxy for?",
+                options: ["High employee engagement", "High coordination overhead (Infrastructure Glue Tax)", "Quarterly security audits", "The use of multiple programming languages"],
                 correctAnswerIndex: 1,
-                explanation: "If you need a meeting to change a field, you have too much 'glue'. Condense collapses these layers so one engineer can own the change."
+                explanation: "If changing one business rule requires a meeting between three teams, the system is too fragmanted. Condense collapses these layers."
             },
             {
-                question: "Why should a seller target 'Pattern 2' maturity (Growth faster than bandwidth) over Pattern 1 (Expanding Kafka)?",
-                options: [
-                    "Pattern 2 targets have a smaller budget and are easier to close quickly.",
-                    "Pattern 2 indicates a 'burning platform' where the pain of maintaining the status quo is greater than the cost of a new tool.",
-                    "The technical team in Pattern 1 is usually too busy to take meetings.",
-                    "Pattern 2 companies are legally required to purchase third-party orchestration tools."
-                ],
+                question: "Why should a seller prioritize 'Pattern 2' maturity (Growth outstripping bandwidth) over 'Pattern 1' (Simply expanding Kafka)?",
+                options: ["Pattern 2 targets have smaller budgets", "Pattern 2 indicates a 'burning platform' where manual maintenance is no longer sustainable", "Pattern 1 teams are too busy to take meetings", "Pattern 2 companies are legally required to buy orchestration tools"],
                 correctAnswerIndex: 1,
-                explanation: "Bandwidth constraints ARE the pain. If growth outstrips the team's ability to build, they have no choice but to 'Buy' the platform (BIT)."
+                explanation: "Bandwidth constraints create the strongest 'Build vs Buy' tension. When growth outpaces staff, they MUST buy a platform like Condense."
             },
             {
-                question: "How does 'High Input Diversity' (IoT, Partner APIs, Mobile) lead to 'Logic Sprawl'?",
-                options: [
-                    "Each source requires a unique encryption key, which slows down the Kafka broker.",
-                    "Engineers end up writing custom, isolated transformation 'shims' for every new schema, which become impossible to maintain.",
-                    "Cloud providers charge 3x for data that originated from an external mobile device.",
-                    "It forces the company to use three different versions of the Java SDK."
-                ],
+                question: "How does 'High Input Diversity' (IoT, Partner APIs, Mobile) lead to 'Logic Sprawl' in a traditional architecture?",
+                options: ["Each source requires unique hardware", "Engineers write isolated transformation 'shims' for every new schema, creating a maintenance nightmare", "Cloud providers charge 3x for mobile data", "It forces the use of multiple Java versions"],
                 correctAnswerIndex: 1,
-                explanation: "Diversity = complexity. Without a unified engine, every new source starts as a 'quick fix' that eventually contributes to an unmanageable sprawl."
+                explanation: "Without a unified engine, every new schema starts as a 'quick fix' code blob that eventually contributes to an unmanageable sprawl."
             },
             {
                 question: "Under the 'BYOC Signal', what is the strategic advantage of aligning with the customer's EDP (Enterprise Discount Program)?",
-                options: [
-                    "Zeliot gets a percentage of the cloud provider's discount as a kickback.",
-                    "It allows Condense to bypass the customer's internal procurement team.",
-                    "Infrastructure spend on Condense compute nodes in their VPC counts toward their cloud commitment, making the 'net cost' feel lower.",
-                    "Cloud providers provide free technical support for BYOC implementations."
-                ],
+                options: ["Zeliot gets a kickback from the cloud provider", "It allows Condense to bypass procurement", "Infrastructure spend on Condense nodes inside their VPC counts toward their cloud commitment", "Cloud providers provide free support for BYOC"],
                 correctAnswerIndex: 2,
-                explanation: "EDP alignment removes the 'budget' blocker. If they've already committed $5M to AWS, spending it on BYOC nodes is 'free' from their perspective."
+                explanation: "EDP alignment removes budget blockers. If they've already committed millions to AWS, spending it on BYOC nodes feels like an internal optimization."
             },
             {
-                question: "What is the primary indicator of 'Scaling Silos' in a prospect's architecture diagram?",
-                options: [
-                    "The use of multiple cloud regions (e.g., us-east-1 and eu-central-1).",
-                    "Independent autoscaling groups for the ingestion layer and the processing layer that do not communicate.",
-                    "A high number of partitions per Kafka topic.",
-                    "The inclusion of a third-party caching layer like Redis."
-                ],
+                question: "What is the primary indicator of 'Scaling Silos' in a prospect's architecture?",
+                options: ["The use of multiple cloud regions", "Independent autoscaling groups for ingestion and processing that do not communicate", "A high number of partitions", "The inclusion of a Redis cache"],
                 correctAnswerIndex: 1,
-                explanation: "If layers scale separately (silos), one layer spikes and crushes the other (backpressure). Condense unifies these scaling signals."
+                explanation: "If ingestion scales but processing doesn't, the system lags. Condense unifies these scaling signals for end-to-end stability."
             },
             {
-                question: "A job posting requires 'Deep knowledge of MSK partitioning and tuning consumer groups.' What does this tell you about their environment?",
-                options: [
-                    "They are in a highly mature, automated state with no operational toil.",
-                    "They are likely over-invested in manual 'infrastructure management' and could benefit from Condense's automation.",
-                    "They are planning to migrate away from AWS MSK in the next 12 months.",
-                    "The company has a policy of only hiring Senior Staff Engineers."
-                ],
+                question: "A job posting requires 'Deep knowledge of MSK partitioning and tuning consumer groups.' What does this tell a Condense seller?",
+                options: ["They are in a highly automated state", "They are over-invested in manual 'infrastructure management' and could benefit from Condense automation", "They are migrating away from AWS", "They only hire Senior Staff Engineers"],
                 correctAnswerIndex: 1,
-                explanation: "MSK tuning is 'toil'. If they are hiring specialized headcount for this, they reached the 'complexity ceiling' where it is hurting their bottom line."
+                explanation: "MSK tuning is 'toil'. If they are hiring headcount specifically for this, they've reached the 'complexity ceiling' where it hurts their bottom line."
             }
         ]
     },
@@ -784,34 +807,52 @@ export const fullPlaybookData: Chapter[] = [
         ],
         quiz: [
             {
-                question: "Which layer is being commoditized by cloud providers?",
-                options: ["Layer 1: Broker", "Layer 2: Logic", "Layer 3: UI", "Layer 0: Hardware"],
+                question: "Which layer of the real-time data stack is currently being most heavily commoditized by cloud providers (e.g., AWS MSK)?",
+                options: ["Layer 1: The Message Broker", "Layer 2: The Logic Engine", "Layer 3: The Application UI", "Layer 0: The Physical Networking"],
                 correctAnswerIndex: 0,
-                explanation: "Easy: Cloud providers give away brokers (MSK) for free."
+                explanation: "Brokers are becoming 'utilities'. Value is moving up the stack to the layers that handle logic and operations."
             },
             {
-                question: "What is the 'Infrastructure Glue Tax'?",
-                options: ["Cloud storage fee", "Maintenance toil", "Marketing cost", "Legal overhead"],
+                question: "How does Zeliot define the 'Infrastructure Glue Tax' within the streaming market?",
+                options: ["The cost of cloud storage credits", "Engineering bandwidth wasted on 'stitching' disjointed services together instead of building features", "Monthly licensing fees for marketing tools", "The salary of a compliance officer"],
                 correctAnswerIndex: 1,
-                explanation: "Medium: Bandwidth wasted on 'piping' instead of building product."
+                explanation: "The 'tax' is the massive hidden cost of human effort spent managing connections between tools."
             },
             {
-                question: "Why does BYOC open the 'Unsellable' market?",
-                options: ["Lower prices", "Faster support", "Data residency laws", "Open source code"],
+                question: "Why does the BYOC (Bring Your Own Cloud) model open up a market segment that was previously 'unsellable' for SaaS vendors?",
+                options: ["It offers the lowest possible price point", "It provides faster 24/7 technical support", "It satisfies strict data residency and sovereignty laws for Banks and Governments", "It allows developers to use any programming language they want"],
                 correctAnswerIndex: 2,
-                explanation: "Medium: Banks and Gov require in-cloud data residency."
+                explanation: "Regulated industries cannot send data to a external SaaS. BYOC (software-to-data) is the only deployment model they can legally accept."
             },
             {
-                question: "Which tier yields the highest long-term margins?",
-                options: ["Broker tier", "Storage tier", "Logic tier", "Network tier"],
+                question: "Which tier of the real-time pipeline stack yields the highest long-term strategic margins?",
+                options: ["The Broker Storage tier", "The Object Storage/Archive tier", "The Logic/Processing tier", "The Public Networking/CDN tier"],
                 correctAnswerIndex: 2,
-                explanation: "Hard: Business logic is sticky and high-value."
+                explanation: "Business logic is 'sticky' and high-value. Once a company builds their rules into a platform, it becomes the core of their operation."
             },
             {
-                question: "Why is Layer 2 considered the most 'fragile' stack part?",
-                options: ["Hardware breaks", "Custom code mess", "Cloud outages", "Slow internet"],
+                question: "Layer 2 (Processing) is often described as the most 'fragile' part of the data stack because:",
+                options: ["The hardware nodes crash frequently", "It relies on custom, unmanaged 'glue code' and disjointed microservices", "Cloud providers frequently change their API versions", "It is usually built on open-source hardware"],
                 correctAnswerIndex: 1,
-                explanation: "Hard: Manual glue code for every rule is a massive liability."
+                explanation: "Fragmentation leads to fragility. When dozens of services are stitched together manually, the system becomes a 'house of cards'."
+            },
+            {
+                question: "According to market analysis, what percentage of the Kafka user base successfully manages the broker but fails at Layer 2 (Processing)?",
+                options: ["Less than 5%", "Approximately 20%", "A staggering majority (Over 70%)", "Only companies in the retail sector"],
+                correctAnswerIndex: 2,
+                explanation: "Ingestion is 'solved'. Processing is the 'unsolved' bottleneck where the majority of enterprises are currently struggling."
+            },
+            {
+                question: "Condense's TAM is larger than traditional analytics because it simultaneously consumes which categories?",
+                options: ["Managed Kafka, Pipeline Orchestration, and Ops Platforms", "Email marketing and SEO management", "Video editing and 3D modeling", "Social media management and HR payroll"],
+                correctAnswerIndex: 0,
+                explanation: "Condense unifies several billion-dollar categories into one integrated platform."
+            },
+            {
+                question: "What is driving the growth of the real-time data market to a projected $150B by 2030?",
+                options: ["The decline of mobile internet usage", "The transition toward continuous operations, IoT fleets, and real-time AI inputs", "The move back toward traditional batch processing", "A global reduction in data generation"],
+                correctAnswerIndex: 1,
+                explanation: "The world is moving to 'always-on'. Real-time data is the oxygen for next-gen mobility, AI, and logistics."
             }
         ]
     },
@@ -921,34 +962,52 @@ export const fullPlaybookData: Chapter[] = [
         ],
         quiz: [
             {
-                question: "What is the risk of 'SoC Fragmentation' in EV?",
-                options: ["Physical connectors", "Disconnected telemetry", "Small Kafka clusters", "Slow internet"],
+                question: "In the Mobility sector, what is the primary operational risk of 'SoC (State of Charge) Fragmentation' for an EV fleet manager?",
+                options: ["Incompatible physical charging connectors", "The inability to synthesize real-time battery health across millions of disjointed telemetry signals", "A lack of qualified Kafka administrators", "Slow public internet speeds in rural areas"],
                 correctAnswerIndex: 1,
-                explanation: "Easy: Scattered data prevents real-time battery health synthesis."
+                explanation: "Scattered data prevents real-time battery health synthesis. Condense unifies these streams into a single processing plane."
             },
             {
-                question: "Why avoid 'ETL' when pitching to Mobility architects?",
-                options: ["Too analytical", "Batch implies 'too late'", "Only uses SQL", "Disliked by Java devs"],
+                question: "Why should a seller avoid using the term 'Batch ETL' when pitching to a modern Mobility architect?",
+                options: ["It sounds too analytical and academic", "In Mobility, data that arrives 'late' via batches is often operationally useless", "Mobility architects only use Python, not SQL", "It is a trademarked term by a competitor"],
                 correctAnswerIndex: 1,
-                explanation: "Medium: Mobility is operational. 'Late' data is useless."
+                explanation: "Mobility is operational. If a vehicle anomaly is caught 2 hours later in a batch job, the battery may have already failed."
             },
             {
-                question: "What is a major 'timing signal' for a mobility pitch?",
-                options: ["New CEO hire", "Launching EV lines", "Stock price drop", "New logo design"],
+                question: "Which of these is a major 'Timing Signal' that indicates a Mobility prospect is entering a high-demand architectural phase?",
+                options: ["A company-wide rebranding or logo change", "The launch of a new Electric Vehicle (EV) line or software-defined vehicle platform", "A decrease in the company's quarterly marketing budget", "A move to a larger physical headquarters"],
                 correctAnswerIndex: 1,
-                explanation: "Medium: New technology rollouts increase architectural demand."
+                explanation: "New technology rollouts drastically increase the volume and complexity of telemetry, creating immediate pressure on the existing stack."
             },
             {
-                question: "Why is BYOC mandatory for global OEMs?",
-                options: ["Cheaper servers", "Data sovereignty", "Better UI", "More SRE jobs"],
+                question: "Why is the Condense BYOC model often considered 'Mandatory' for global Automotive OEMs?",
+                options: ["It reduces the cost of physical servers", "Vehicle telemetry is a strategic asset protected by strict data sovereignty and security policies", "It provides a more colorful user interface for the dashboard", "It allows them to hire more SREs"],
                 correctAnswerIndex: 1,
-                explanation: "Hard: Vehicle data is a strategic asset; it cannot leave their VPC."
+                explanation: "OEM data is sensitive. It cannot leave their cloud perimeter. BYOC satisfies this 'must-have' requirement."
             },
             {
-                question: "How does 'Multi-Hop' hurt fleet managers?",
-                options: ["High Jira count", "Accumulated latency", "Bad UI graphics", "High payroll cost"],
+                question: "How does a 'Multi-Hop' pipeline (e.g., Kinesis -> Lambda -> MSK -> Cloud Function) specifically hurt a fleet management service?",
+                options: ["It increases the monthly Jira ticket count", "It introduces non-deterministic 'accumulated latency' and multiple points of failure", "It makes the system graphics look outdated", "It increases the CEO's personal travel expenses"],
                 correctAnswerIndex: 1,
-                explanation: "Hard: Every hop adds non-deterministic lag and failure points."
+                explanation: "Every 'hop' adds delay and risk. Condense collapses these into one high-performance runtime."
+            },
+            {
+                question: "Which persona is most likely to be distressed by 'Slow Feature Delivery' during the rollout of a new mobility app?",
+                options: ["The Head of Human Resources", "The VP of Engineering", "The Facilities Manager", "The Chief Financial Officer"],
+                correctAnswerIndex: 1,
+                explanation: "VP Eng carries the burden of delivery. If the pipeline is too complex to modify, they miss their product deadlines."
+            },
+            {
+                question: "If a mobility prospect mentions 'Infrastructure Glue' consumption, they are likely referring to:",
+                options: ["Physical adhesive for vehicle manufacturing", "The massive engineering effort spent stitching disjointed cloud services together", "A new type of database indexing strategy", "A cloud provider's loyalty program"],
+                correctAnswerIndex: 1,
+                explanation: "Glue is the 'toil'. Condense automates it so engineers can focus on 'value' (business logic)."
+            },
+            {
+                question: "The 'Single Motion' pitch for Mobility turns 'Deployment' from a tool-chain nightmare into:",
+                options: ["A series of 50 manual steps", "A declarative pipeline definition where Condense handles the underlying infra", "A request for more budget", "A migration back to on-premise servers"],
+                correctAnswerIndex: 1,
+                explanation: "Simplicity is the key. Define the logic, and let the platform handle the provisioning of connectors and topics."
             }
         ]
     },
@@ -1054,99 +1113,72 @@ export const fullPlaybookData: Chapter[] = [
                     type: "list",
                     title: "Pivot & Ask",
                     content: [
-                        "Pivot: \"Instead of a deployment, we can do a short technical validation or architecture review now so that you're ready when the next planning cycle opens.\"",
+                        "Pivot: \"Instead of a deployment, we can do a short technical review now so that you're ready when the next planning cycle opens.\"",
                         "Ask: \"Would early evaluation without commitment help you bring this into the next roadmap cycle?\""
-                    ]
-                }
-            ],
-            [
-                {
-                    type: "action-block",
-                    title: "Objection 6: \"We don't have bandwidth to evaluate anything new.\"",
-                    content: "What they mean: We're overwhelmed; even a POC feels heavy."
-                },
-                {
-                    type: "paragraph",
-                    content: "Response: \"Evaluation doesn't need to be heavy. We handle most of it — we deploy into your cloud, integrate with your Kafka, and use one of your existing workflows to demonstrate improvement. Your team's involvement can be minimal.\""
-                },
-                {
-                    type: "list",
-                    title: "Pivot & Ask",
-                    content: [
-                        "Pivot: \"Most customers start by giving us one pipeline and a single contact person for reviews.\"",
-                        "Ask: \"If we kept your team's time investment to under a few hours, would evaluation be feasible?\""
-                    ]
-                }
-            ],
-            [
-                {
-                    type: "action-block",
-                    title: "Objection 7: \"Budget isn't available this quarter.\"",
-                    content: "What they mean: We need to defer decisions without closing the door."
-                },
-                {
-                    type: "paragraph",
-                    content: "Response: \"That's absolutely fine. Many teams use the current quarter for validation so that budget allocation becomes easier next cycle.\""
-                },
-                {
-                    type: "list",
-                    title: "Pivot & Ask",
-                    content: [
-                        "Pivot: \"We can run discovery and sizing now at no cost, so you can plan cleanly for next quarter.\"",
-                        "Ask: \"When should we reconnect to align with your internal budgeting calendar?\""
-                    ]
-                }
-            ],
-            [
-                {
-                    type: "action-block",
-                    title: "Objection 8: \"The timing is not right — maybe next year.\"",
-                    content: "What they mean: We don't want to commit until we have clarity on future priorities."
-                },
-                {
-                    type: "paragraph",
-                    content: "Response: \"That's completely understandable. Our experience is that the best time to align is just before new planning cycles or before a major rollout of new signals, models, or fleet integrations.\""
-                },
-                {
-                    type: "list",
-                    title: "Pivot & Ask",
-                    content: [
-                        "Pivot: \"Most mobility organisations see value in starting conversations at the beginning of the half-year, when roadmaps and investments are reviewed.\"",
-                        "Ask: \"Is the start of the next half-year the right window for a deeper technical or commercial discussion?\""
                     ]
                 }
             ]
         ],
         quiz: [
             {
-                question: "How to pivot from 'Central IT' policy objections?",
-                options: ["Avoid VPC", "Vendor listing", "Pay IT team", "ignore policy"],
+                question: "When a prospect objects based on 'Central IT Policy', what is the most strategically effective pivot?",
+                options: ["Tell them to ignore the policy", "Suggest getting Condense 'listed' as an approved vendor to remove the burden from their team", "Offer to build a private data center for them", "Wait until the policy changes next year"],
                 correctAnswerIndex: 1,
-                explanation: "Easy: Getting 'listed' makes you an approved toolkit part."
+                explanation: "Becoming an 'approved tool' makes it easier for sub-teams to adopt Condense without fighting internal battles."
             },
             {
-                question: "What is the rebuttal for 'No bandwidth to evaluate'?",
-                options: ["Wait 6 months", "Recover bandwidth", "Hire interns", "Call CEO"],
+                question: "How should you rebut the objection: 'We don't have the bandwidth to evaluate something new'?",
+                options: ["Offer them more free cloud credits", "Explain that Condense is designed specifically to recover bandwidth by removing 'toil'", "Tell them you'll call back in 12 months", "Suggest they hire more junior developers"],
                 correctAnswerIndex: 1,
-                explanation: "Medium: Condense removes 'toil' to give time back to engineers."
+                explanation: "The bandwidth problem IS the reason they need the platform. It gives time back to the engineering team."
             },
             {
-                question: "How to handle 'Pricing too high' during first calls?",
-                options: ["20% discount", "Pivot to value", "Call finance", "Stop call"],
+                question: "What is the correct way to handle a 'Pricing is too high' objection during an initial discovery call?",
+                options: ["Immediately offer a 30% discount", "Pivot the discussion back to the size of the operational problem being solved", "End the call and move to the next lead", "Agree that it is expensive and apologize"],
                 correctAnswerIndex: 1,
-                explanation: "Medium: Align on the problem's size before discussing packaging."
+                explanation: "Price only makes sense in the context of value. If the pain is $10M, a $100k tool is a bargain."
             },
             {
-                question: "Why is 'Simplification' powerful for large enterprises?",
-                options: ["Free credits", "Operational risk", "McKinsey buzzword", "Tax breaks"],
+                question: "For a multi-billion dollar enterprise, why is 'Simplification' often a more powerful argument than 'Cloud Cost Savings'?",
+                options: ["Because they have unlimited money", "Operational risk and engineering agility are more critical to their survival than saving pennies on infra", "They are legally required to use complex systems", "Large companies don't care about cloud bills"],
                 correctAnswerIndex: 1,
-                explanation: "Hard: Risk and agilty are more critical than pennies for big firms."
+                explanation: "Risk and 'Time to Market' are the real board-level concerns for giant organizations."
             },
             {
-                question: "What is the pivot for 'We already have MSK'?",
-                options: ["MSK is bad", "Broker vs Logic gap", "Buy Confluent", "Exit Kafka"],
+                question: "What is the pivot for the objection: 'We already have AWS MSK, so we're good'?",
+                options: ["MSK is outdated technology", "Clarify that MSK manages the 'Highway' (Brokers), while Condense manages the 'Cars and Tolls' (Pipeline Logic)", "Suggest they switch to Confluent immediately", "Wait for MSK to have an outage"],
                 correctAnswerIndex: 1,
-                explanation: "Hard: MSK manages brokers; Condense manages the application logic."
+                explanation: "Managed brokers solve the storage problem; Condense solves the processing and logic problem. They work together."
+            },
+            {
+                question: "When a customer says 'The timing isn't right,' what is the best 'Closing Ask'?",
+                options: ["Ask for a meeting next Monday", "Ask when their next major roadmap planning cycle begins", "Ask for the CEO's personal phone number", "Ask them to sign a letter of intent anyway"],
+                correctAnswerIndex: 1,
+                explanation: "Aligning with the budget/roadmap cycle ensures you aren't fighting a losing battle against timing."
+            },
+            {
+                question: "Objection: 'This looks like a major investment.' What is the rebuttal?",
+                options: ["Confirm it is a 3-year project", "Emphasize that you can start with a small, non-disruptive part of the current pipeline", "Tell them the cloud provider pays for it", "Explain that all large systems require high effort"],
+                correctAnswerIndex: 1,
+                explanation: "Condense is 'additive'. You don't have to rip and replace everything to start seeing value."
+            },
+            {
+                question: "If a buyer says 'We use a full-code microservice approach,' how do you position Condense's hybrid model?",
+                options: ["Tell them microservices are a mistake", "Show how Condense's IDE and Git workflows satisfy full-code needs while speeding up delivery", "Explain that no-code is always better than full-code", "Recommend they fire their backend engineers"],
+                correctAnswerIndex: 1,
+                explanation: "Condense supports full-code via its IDE; it just makes it faster and more observable."
+            },
+            {
+                question: "Why should you share security and architecture docs with 'Central IT' early in the process?",
+                options: ["To bore them so they stop asking questions", "To proactively validate 'BYOC' compatibility and build trust upfront", "Because it is required by the US government", "To show off Zeliot's graphic design skills"],
+                correctAnswerIndex: 1,
+                explanation: "Removing the 'Security' blocker early prevents the deal from stalling later in procurement."
+            },
+            {
+                question: "What is the ultimate goal of effective objection handling?",
+                options: ["To win every argument", "To build the buyer's confidence and uncover the real path to a 'Yes'", "To hide the product's weaknesses", "To speed up the call so you can hit your quota"],
+                correctAnswerIndex: 1,
+                explanation: "Objections are questions. Answering them correctly builds the partnership."
             }
         ]
     },
@@ -1263,34 +1295,64 @@ export const fullPlaybookData: Chapter[] = [
         ],
         quiz: [
             {
-                question: "What is the 'Highway' in the Condense analogy?",
-                options: ["Traffic", "Kafka", "Users", "Internet"],
+                question: "What is the primary win condition for Condense in large-scale mobility environments?",
+                options: ["Low-latency streaming at the broker layer", "A unified execution environment inside the customer's cloud", "A free trial for the first 12 months", "The ability to run on any operating system"],
                 correctAnswerIndex: 1,
-                explanation: "Easy: Kafka is the path; Condense is the logic."
+                explanation: "Unification + Control + Performance inside the customer's VPC is the core value proposition."
             },
             {
-                question: "When is microservice architecture at its 'limit'?",
-                options: ["100+ devs", "Coordinated releases", "Cloud migration", "Language switch"],
+                question: "Why does Condense win against 'Lambda-heavy' architectures?",
+                options: ["Lambdas are too cheap for board attention", "Condense eliminates non-deterministic cold starts and 'multi-hop' complexity", "Cloud providers are shutting down serverless platforms", "Condense is written in a more modern language"],
                 correctAnswerIndex: 1,
-                explanation: "Medium: Fragmentation causes friction and slows delivery."
+                explanation: "Serverless is great for API calls, but poor for stateful, low-latency streaming pipelines."
             },
             {
-                question: "How does collapsing 'Hops' impact costs?",
-                options: ["Flat yearly fee", "Eliminates hidden tax", "Negotiates discounts", "Legal requirement"],
+                question: "What specific operational burden does Condense remove from the SRE team?",
+                options: ["The need to buy hardware", "The 'detective work' required to debug failures across fragmented microservices", "The duty of hiring new developers", "Managing the company's internal wiki"],
                 correctAnswerIndex: 1,
-                explanation: "Medium: Stops egress and redundant function fees."
+                explanation: "Unification means one place to look when things go wrong. No more chasing logs across 10 different services."
             },
             {
-                question: "Why is BYOC essential for global OEMs?",
-                options: ["Cheaper SaaS", "Data sovereignty", "5G support", "More SREs"],
+                question: "How does the 'Infrastructure Glue Tax' manifest in a typical streaming project?",
+                options: ["As a literal tax paid to the government", "In the months of engineering time spent on connectors, shims, and piping", "As a fee for using more than one cloud provider", "As the cost of physical networking cables"],
                 correctAnswerIndex: 1,
-                explanation: "Hard: Sensitive vehicle data must stay in their VPC."
+                explanation: "Glue is the hidden cost of fragmentation. Condense collapses this into a single platform."
             },
             {
-                question: "Why does Condense win on 'AI Readiness'?",
-                options: ["Deterministic enrichment", "Free engineers", "Python only", "Cloud storage"],
-                correctAnswerIndex: 0,
-                explanation: "Hard: Stitched pipelines can't guarantee clean AI inputs."
+                question: "Why is 'Predictable Cost' a winning signal for platform owners?",
+                options: ["Because they always want the lowest possible price", "It eliminates hidden spikes from egress, per-invocation fees, and scaling surprises", "It allows them to pay for the software upfront", "It is required for SOX compliance"],
+                correctAnswerIndex: 1,
+                explanation: "Predictability is as important as absolute cost. No CFO likes a surprise $50k bill for a traffic spike."
+            },
+            {
+                question: "What does managed Kafka (e.g., Confluent/MSK) solve vs. what it leaves unsolved?",
+                options: ["Solves the storage; solves the logic", "Solves the storage and broker availability; leaves the logic and operations unsolved", "Solves the UI; leaves the database unsolved", "Solves the pricing; leaves the support unsolved"],
+                correctAnswerIndex: 1,
+                explanation: "Brokers are pipes. Someone still has to build and operate the 'brain' that uses those pipes."
+            },
+            {
+                question: "Which pattern is a high-confidence signal that a prospect is ready for Condense?",
+                options: ["They are using a waterfall development model", "They have 50+ microservices currently handling real-time transforms", "They are planning to move away from Kafka", "They only use on-premise servers"],
+                correctAnswerIndex: 1,
+                explanation: "Complexity is the trigger. If they have dozens of services, they are likely suffering from fragmentation."
+            },
+            {
+                question: "Why is 'AI Readiness' a major selling point for Condense in 2024?",
+                options: ["Condense is an AI company", "AI models need the fresh, reliable, and cleaned data that Condense provides in real-time", "AI requires a very specific type of cloud storage", "Condense can write the AI code for the customer"],
+                correctAnswerIndex: 1,
+                explanation: "Garbage in, garbage out. Condense ensures the 'data in' part is perfect for real-time AI."
+            },
+            {
+                question: "What is the strategic advantage of being 'BYOC-Native'?",
+                options: ["It makes the company look more modern", "It aligns with the customer's cloud commitments (EDP) and security policies", "It allows Condense to avoid paying for servers", "It is faster to deploy than SaaS"],
+                correctAnswerIndex: 1,
+                explanation: "Aligning with where the data already lives removes the biggest barrier to enterprise sales."
+            },
+            {
+                question: "In the 'Highway' analogy, if Kafka is the road, what is Condense?",
+                options: ["The asphalt", "The traffic control system, toll booths, and delivery fleet optimization", "The cars themselves", "The destination city"],
+                correctAnswerIndex: 1,
+                explanation: "Condense manages the activity and logic that happens ON the highway."
             }
         ]
     },
@@ -1448,34 +1510,64 @@ export const fullPlaybookData: Chapter[] = [
         ],
         quiz: [
             {
-                question: "Pivot for 'already use Confluent' objections?",
-                options: ["Better broker tech", "Logic processing gap", "Future acquisition", "Manage their brokers"],
+                question: "What is the primary pivot when a prospect says, 'We already use Confluent Cloud'?",
+                options: ["Confluent is outdated and slow", "Acknowledge Confluent's broker success but highlight the gap in managed logic/processing and the cost of SaaS egress", "Tell them that Condense is owned by Google", "Wait for Confluent to increase their prices"],
                 correctAnswerIndex: 1,
-                explanation: "Easy: Confluent sells pipes. We sell the 'brains' on those pipes."
+                explanation: "Confluent sells brokers. Condense sells the 'Logic Runtime' that runs inside your own cloud, reducing TCO and complexity."
             },
             {
-                question: "What is the primary Condense vs Redpanda difference?",
-                options: ["C++ vs Java", "Full architecture focus", "Azure vs AWS", "Kafka support"],
+                question: "How does Condense differentiate from AWS MSK for a high-scale enterprise?",
+                options: ["MSK is too difficult to install", "Condense provides a unified environment for transforms and operations, replacing the 'Lambda Sprawl' often found with MSK", "MSK doesn't support Kafka 3.0", "AWS is planning to shut down MSK"],
                 correctAnswerIndex: 1,
-                explanation: "Medium: Redpanda optimizes brokers; Condense simplifies the architecture."
+                explanation: "MSK is just a broker. Condense is a platform that solves the processing layer that MSK leaves to the customer."
             },
             {
-                question: "Rebuttal for AutoMQ's cost efficiency?",
-                options: ["No support", "Pipeline consolidation savings", "Kubernetes incompatibility", "Free trial"],
+                question: "If a prospect is evaluating Redpanda primarily for its C++ performance, how should a Condense seller respond?",
+                options: ["C++ is more difficult to maintain than Java", "Redpanda optimizes the broker; Condense simplifies the entire end-to-end architecture, including the logic layer", "Redpanda is not compatible with standard Kafka tools", "Performance doesn't matter for modern applications"],
                 correctAnswerIndex: 1,
-                explanation: "Medium: Consolidation saves more than broker-only optimization."
+                explanation: "Broker performance is a 'niche' win. Architectural simplification is a 'business' win."
             },
             {
-                question: "Why do enterprises reject SaaS for streaming?",
-                options: ["Small SaaS teams", "Data residency risks", "Legal protocols", "Hardware preference"],
+                question: "What is the rebuttal for AutoMQ's claim of '90% cost reduction' at the broker layer?",
+                options: ["Their numbers are fake", "Broker savings are trivial compared to the total savings found in consolidating the whole pipeline into Condense", "AutoMQ only works on-premise", "Cost reduction is not a priority for our customers"],
                 correctAnswerIndex: 1,
-                explanation: "Hard: Data sovereignty prevents letting telemetry leave the VPC."
+                explanation: "90% of a small slice (broker) is less than 30% of the entire pie (full pipeline + ops + dev time)."
             },
             {
-                question: "Why ask DIY Kafka users about 'Maintenance'?",
-                options: ["Wasted engineering time", "Buy more servers", "Illegal in EU", "Linux version check"],
-                correctAnswerIndex: 0,
-                explanation: "Hard: Highlights opportunity cost of fixing pipes vs building features."
+                question: "Why do enterprises with DIY Kafka setups eventually look at Condense?",
+                options: ["They ran out of disk space", "The operational 'toil' of tuning, upgrading, and managing version drift becomes a bottleneck for innovation", "Kafka is being replaced by a new protocol", "They want to move back to batch processing"],
+                correctAnswerIndex: 1,
+                explanation: "Managing infrastructure is not a competitive advantage. Using it to build features is."
+            },
+            {
+                question: "Against Aiven, what is the 'BYOC' advantage?",
+                options: ["Aiven is only available in Europe", "With Condense, you use your own cloud credits (EDP) and keeping data inside your VPC is more secure than Aiven's external SaaS", "Aiven has a better logo", "BYOC is cheaper for small startups"],
+                correctAnswerIndex: 1,
+                explanation: "Enterprise Discount Programs (EDP) and Security are the two biggest levers for large deals."
+            },
+            {
+                question: "WarpStream optimizes storage. How does Condense's value proposition compare?",
+                options: ["Condense also optimizes storage for free", "Condense optimizes the full architecture, not just one component of the broker stack", "WarpStream is a direct partner of Condense", "Condense doesn't care about storage costs"],
+                correctAnswerIndex: 1,
+                explanation: "Storage is a 'commodity' problem. Architecture is a 'strategic' problem."
+            },
+            {
+                question: "What 'Closing Ask' should you use when comparing against any infrastructure-only competitor?",
+                options: ["'Can we beat their price by 10%?'", "'Are you looking to optimize just the broker, or the entire real-time architecture?'", "'Can I send you a free t-shirt?'", "'When can you fire your current vendor?'"],
+                correctAnswerIndex: 1,
+                explanation: "This question forces the buyer to think about the 'Logic' and 'Operations' gap they currently have."
+            },
+            {
+                question: "When a customer says 'We use Flink for processing,' what is the Condense pivot?",
+                options: ["Flink is too hard to learn", "Flink is powerful but often requires a massive separate operation; Condense unifies logic in a high-performance runtime", "Flink is being deprecated by the Apache foundation", "Condense uses Flink internally"],
+                correctAnswerIndex: 1,
+                explanation: "Complexity is the Flink killer. Condense provides the power without the 'Ops tax' of Flink."
+            },
+            {
+                question: "What is the common thread in every competitive win for Condense?",
+                options: ["Being the cheapest option", "Simplifying architectural complexity while maintaining full cloud control", "Having the most features on the website", "Using a proprietary message protocol"],
+                correctAnswerIndex: 1,
+                explanation: "Unification + Control + Performance. That is the winning formula."
             }
         ]
     },
@@ -1663,34 +1755,64 @@ export const fullPlaybookData: Chapter[] = [
         ],
         quiz: [
             {
-                question: "Purpose of 'Grafana Monitoring Agent'?",
-                options: ["Voice interface", "Interpret alerts", "Aesthetic charts", "Smart watch view"],
+                question: "What is the core function of the 'Grafana Monitoring Agent' in the Condense 2026 roadmap?",
+                options: ["Designing background colors for charts", "Interpreting alerts and suggesting root causes from logs and metrics", "Replacing the SRE team entirely", "Sending Slack messages to the CEO"],
                 correctAnswerIndex: 1,
-                explanation: "Easy: Tells you why a fire started and how to fix it."
+                explanation: "The agent turns raw alerts into actionable intelligence, reducing the time spent on manual debugging."
             },
             {
-                question: "What is the 'Auto-Optimization Engine' result?",
-                options: ["New config language", "Self-tuning operations", "More Jira tickets", "Replace all SREs"],
+                question: "How does the 'Auto-Optimization Engine' impact high-scale streaming operations?",
+                options: ["It makes the cluster larger by default", "It self-adjusts scaling and resource allocation based on real-time backpressure signals", "It requires 24/7 human supervision", "It only works during off-peak hours"],
                 correctAnswerIndex: 1,
-                explanation: "Medium: Removes the need for manual 3 AM scaling interventions."
+                explanation: "Self-tuning is the ultimate goal. The platform should manage its own resource needs without human intervention."
             },
             {
-                question: "What bottleneck does the 'Pipeline Agent' remove?",
-                options: ["Forgotten passwords", "Specialist dependency", "Electricity usage", "Website downtime"],
+                question: "In the AI-first evolution, what does the 'Pipeline Agent' specifically simplify?",
+                options: ["The company's hiring process", "Converting natural-language descriptions into functional pipeline definitions", "The speed of the public internet", "The cost of cloud storage"],
                 correctAnswerIndex: 1,
-                explanation: "Medium: Product teams can build without waiting for Kafka experts."
+                explanation: "It lowers the barrier to entry, allowing product owners to describe logic in English and see it built automatically."
             },
             {
-                question: "Trial vs SaaS Sandbox difference?",
-                options: ["Trial is paid", "Real-world validation", "Hardware setup", "No difference"],
+                question: "Why is the 'Unified ACL & RBAC' redesign critical for enterprise adoption?",
+                options: ["It makes the UI look more complex", "It provides the fine-grained access control and audit trails required by corporate security officers", "It allows everyone in the company to access any data", "It is required for using the Google Cloud Marketplace"],
                 correctAnswerIndex: 1,
-                explanation: "Hard: Trial uses real data and VPC context, not just a sandbox."
+                explanation: "Security is non-negotiable for large firms. They need to know exactly who did what, and when."
             },
             {
-                question: "Value of 'Unified ACL & RBAC' redesign?",
-                options: ["Delete topics", "Compliance control plane", "Make data public", "Replace VPN"],
+                question: "What is the difference between the Condense 'Trial' and a traditional 'SaaS Sandbox'?",
+                options: ["The Trial is more expensive", "The Trial runs a production-grade environment inside the customer's actual cloud", "The Sandbox has more features", "There is no difference between them"],
                 correctAnswerIndex: 1,
-                explanation: "Hard: Satisfies enterprise auditors with strict access control."
+                explanation: "Validation only counts if it happens in the customer's real environment with their real data."
+            },
+            {
+                question: "What role does the 'Git Agent' play in the development lifecycle?",
+                options: ["Managing the company's website", "Automating GitOps workflows by creating and updating versioned pipeline files", "Replacing the need for GitHub accounts", "Scanning for security vulnerabilities in Java code"],
+                correctAnswerIndex: 1,
+                explanation: "GitOps is the standard for modern delivery. Condense integrates natively with that workflow."
+            },
+            {
+                question: "The 'QA Agent' helps teams by:",
+                options: ["Writing marketing copy for the product launch", "Automatically generating test suites and edge-condition scenarios for new logic", "Performing manual smoke tests every morning", "Hiring external testers"],
+                correctAnswerIndex: 1,
+                explanation: "AI-driven testing ensures that 'idea to production' speed doesn't come at the cost of quality."
+            },
+            {
+                question: "Why does the 'Kubernetes Agent' summarize events and runtime behavior?",
+                options: ["To create reports for the board", "To provide operational transparency and speed up incident resolution", "To reduce the cost of Kubernetes licenses", "To help developers learn K8s syntax"],
+                correctAnswerIndex: 1,
+                explanation: "Debugging K8s can be hard. The agent makes it 'readable' for everyone."
+            },
+            {
+                question: "What is the strategic value of industry-specific 'Template Packs'?",
+                options: ["They provide free stock photos", "They reduce the 'Blank Page' problem by providing pre-built logic for common use cases (e.g., FMS alerts)", "They are required for GDPR compliance", "They make the code run 50% faster"],
+                correctAnswerIndex: 1,
+                explanation: "Templates = Speed. Why build an alert system from scratch when you can use a proven model?"
+            },
+            {
+                question: "By Dec 2026, Condense aims to be:",
+                options: ["A simple managed Kafka provider", "A self-optimizing, AI-assistive streaming platform that runs everywhere", "A standalone cloud provider", "A consulting firm for data engineers"],
+                correctAnswerIndex: 1,
+                explanation: "The goal is 'Intelligent Streaming'—where the platform does more than just move data."
             }
         ]
     },
@@ -1928,34 +2050,52 @@ export const fullPlaybookData: Chapter[] = [
         ],
         quiz: [
             {
-                question: "Why did Volvo Eicher replace IBM with Condense?",
-                options: ["Cheaper SaaS", "Hardware integration", "Java support", "New UI"],
+                question: "Why did Volvo Eicher Commercial Vehicles (VECV) replace IBM Event Streams with Condense?",
+                options: ["IBM was too modern for them", "IBM lacked direct hardware integration, leading to high managed-service costs", "Condense provided more free cloud storage", "VECV wanted to move away from Kafka entirely"],
                 correctAnswerIndex: 1,
-                explanation: "Easy: Condense talk to devices directly, unlike IBM."
+                explanation: "Condense's direct hardware connectors + BYOC gave VECV the control and cost profile they lacked with IBM."
             },
             {
-                question: "Hidden ROI for switching from OSS Kafka?",
-                options: ["Free SREs", "End engineering toil", "Marketing reports", "Tax credits"],
+                question: "What was the primary driver for Volvo Trucks India choosing Condense?",
+                options: ["Lower initial license fee", "GTM Acceleration via pre-built hardware connectors for mining vehicles", "A requirement for 24/7 customer support", "Their developers preferred the Condense UI"],
                 correctAnswerIndex: 1,
-                explanation: "Medium: OSS is expensive in senior engineering salaries."
+                explanation: "When launching 'Fleet Assist Service', speed to market was the #1 priority."
             },
             {
-                question: "How does Royal Enfield confirm cloud-agnosticism?",
-                options: ["Private data center", "Azure and GCP support", "Proprietary cloud", "Shared clusters"],
+                question: "How does the win at Ashok Leyland demonstrate the 'Multi-Product' value of Condense?",
+                options: ["It only powers one small application", "It powers both public-facing FMS (iAlert) and internal service tools (ConnectAll) through a unified backend", "It proved that SaaS is better than BYOC", "It showed that single-team involvement is enough"],
                 correctAnswerIndex: 1,
-                explanation: "Medium: Condense brings the same logic to ANY cloud."
+                explanation: "Condense is a platform, not a point solution. One deployment can serve many business units."
             },
             {
-                question: "Why replace Confluent at Montra?",
-                options: ["Tractor ban", "Variant scaling control", "SaaS preference", "Slow processing"],
+                question: "Why did Norq Technologies switch from Open Source (OSS) Kafka to Condense?",
+                options: ["OSS Kafka was legally banned in their region", "To lower TCO while scaling from 10k to 55k assets with a predictable cost curve", "They wanted to stop using the cloud", "Condense has a better training program"],
                 correctAnswerIndex: 1,
-                explanation: "Hard: Owning the platform is better for complex fleet variants."
+                explanation: "Scaling OSS Kafka is 'Senior Engineer' heavy. Condense makes that scale affordable and manageable."
             },
             {
-                question: "Which persona drives GTM Acceleration wins?",
-                options: ["CISO", "Head of Digital", "Junior Engineer", "Finance Director"],
+                question: "At Adani Port Operations, what was the key differentiator for Condense over Google Pub/Sub?",
+                options: ["Pub/Sub was too fast for their needs", "Hardware connector readiness + GCP Marketplace availability for seamless billing", "Pub/Sub's lack of a web interface", "Condense's ability to run on-premise only"],
                 correctAnswerIndex: 1,
-                explanation: "Hard: Digital leads care about revenue launch speed."
+                explanation: "Marketplace alignment + Connector readiness = zero friction for complex industrial projects."
+            },
+            {
+                question: "Which pattern is most common across all 15 customer wins?",
+                options: ["A preference for manual coding over templates", "BYOC Kafka as a major advantage for cost and security control", "A move away from real-time streaming back to batch", "A focus on reducing the number of SREs to zero"],
+                correctAnswerIndex: 1,
+                explanation: "Enterprise buyers consistently prioritize control of their data and cloud spend."
+            },
+            {
+                question: "Why is 'FMS-ready transforms' a recurring reason for FMS providers to switch?",
+                options: ["It makes the application run slower", "It drastically reduces engineering dependency, leading to faster time-to-revenue", "It is required for ISO certification", "It allows them to avoid hiring data scientists"],
+                correctAnswerIndex: 1,
+                explanation: "The less code your engineers have to write, the faster you can sell the product."
+            },
+            {
+                question: "The Montra win highlights Condense's ability to replace which major competitor?",
+                options: ["Confluent Cloud", "AWS MSK", "IBM Event Streams", "Google Pub/Sub"],
+                correctAnswerIndex: 0,
+                explanation: "Montra replaced a premium SaaS (Confluent) with Condense for better control and lower cost."
             }
         ]
     },
@@ -2040,38 +2180,7 @@ export const fullPlaybookData: Chapter[] = [
                 }
             ]
         ],
-        quiz: [
-            {
-                question: "Primary license metric after trial?",
-                options: ["S3 storage GB", "Kafka topics", "Active vCPU hours", "User logins"],
-                correctAnswerIndex: 2,
-                explanation: "Easy: We charge for 'engine' power, not 'distance'."
-            },
-            {
-                question: "Why is 'Fan-Out' critical for sizing?",
-                options: ["Meeting invites", "CPU/Security load", "Legacy support", "Consumer fees"],
-                correctAnswerIndex: 1,
-                explanation: "Medium: More consumers = more replication and security overhead."
-            },
-            {
-                question: "Professional estimate requirements?",
-                options: ["Company revenue", "Throughput/Retention/Cloud", "IDE/Java version", "Competitor name"],
-                correctAnswerIndex: 1,
-                explanation: "Medium: You need the 'river' size and 'traffic' duration."
-            },
-            {
-                question: "Evaluation tier base license fee?",
-                options: ["$10,000", "$500", "$0", "$5,000"],
-                correctAnswerIndex: 2,
-                explanation: "Hard: Lower barriers to entry with zero base fee initially."
-            },
-            {
-                question: "Who pays for BYOC infrastructure?",
-                options: ["Condense (SaaS fee)", "Customer (Direct to cloud)", "Partner", "AWS only"],
-                correctAnswerIndex: 1,
-                explanation: "Hard: Customer keeps their cloud discounts and committed spend."
-            }
-        ]
+        quiz: []
     },
     {
         id: "ch-13",
@@ -2129,37 +2238,6 @@ export const fullPlaybookData: Chapter[] = [
                 }
             ]
         ],
-        quiz: [
-            {
-                question: "Deep Architecture source?",
-                options: ["Blog", "docs.zeliot.in", "2-pager", "Calculator"],
-                correctAnswerIndex: 1,
-                explanation: "Easy: Technical truth lives in the documentation portal."
-            },
-            {
-                question: "Best Confluent battle resource?",
-                options: ["Flyer", "Battlecards", "Newsletter", "Try Now"],
-                correctAnswerIndex: 1,
-                explanation: "Medium: Battlecards highlight BYOC wins specifically."
-            },
-            {
-                question: "Fastest skeptic-to-believer tool?",
-                options: ["Try Now demo", "Deck V2", "Mobility blog", "Spend analysis"],
-                correctAnswerIndex: 0,
-                explanation: "Medium: Live 'hands-on-keys' demo proves the value instantly."
-            },
-            {
-                question: "Where is the 'Jobs to be Done' PDF?",
-                options: ["Calculator", "Resource list", "Win slide", "Roadmap"],
-                correctAnswerIndex: 1,
-                explanation: "Hard: Found in the competitive collateral section."
-            },
-            {
-                question: "Purpose of Mobility e-books?",
-                options: ["Pricing lookup", "Industry education", "Employee training", "SRE manual"],
-                correctAnswerIndex: 1,
-                explanation: "Hard: Guides prospects through high-level mobility digital shifts."
-            }
-        ]
+        quiz: []
     }
 ];
