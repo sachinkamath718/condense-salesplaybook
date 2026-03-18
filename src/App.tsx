@@ -100,12 +100,14 @@ function AppContent({ user, setUser }: { user: UserInfo | null, setUser: (u: Use
         user={user}
         onLogout={handleLogout}
         onAdmin={() => {
-          const adminPass = import.meta.env.VITE_ADMIN_PASSWORD || 'admin123';
+          const adminPass = (import.meta.env.VITE_ADMIN_PASSWORD || 'admin123').toLowerCase();
           const password = window.prompt("Enter Admin Security Passcode:");
-          if (password === adminPass) {
+          
+          if (password?.toLowerCase() === adminPass) {
+            console.log("Admin access granted.");
             setCurrentView('admin');
           } else if (password !== null) {
-            alert(`Security Breach: Invalid Admin Credentials. (Default is 'admin123' if not set in environment)`);
+            alert(`Access Denied. Passcode is incorrect. (Default is 'admin123')`);
           }
         }}
         onDashboard={handleReturnToDashboard}

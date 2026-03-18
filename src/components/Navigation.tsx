@@ -58,29 +58,29 @@ export const Navigation: React.FC<NavigationProps> = ({ user, onLogout, onAdmin,
                     </div>
                 </div>
 
-
-
                 {/* User & Logout */}
                 <div className="flex items-center gap-4 sm:gap-6">
-                    {onAdmin && onDashboard && (
-                        isAdminView ? (
-                            <button
-                                onClick={onDashboard}
-                                className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white text-sm font-medium rounded-xl transition-all border border-white/10 flex items-center gap-2"
-                            >
-                                <Hexagon className="w-4 h-4" />
-                                Return
-                            </button>
-                        ) : (
-                            <button
-                                onClick={onAdmin}
-                                className="px-4 py-2 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 text-sm font-bold rounded-xl transition-all border border-emerald-500/20 flex items-center gap-2 shadow-[0_0_15px_rgba(16,185,129,0.1)]"
-                            >
-                                <Target className="w-4 h-4" />
-                                Admin Panel
-                            </button>
-                        )
-                    )}
+                    <div className="flex items-center gap-3">
+                        {onAdmin && onDashboard && (
+                            isAdminView ? (
+                                <button
+                                    onClick={onDashboard}
+                                    className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white text-sm font-medium rounded-xl transition-all border border-white/10 flex items-center gap-2"
+                                >
+                                    <Hexagon className="w-4 h-4" />
+                                    Return
+                                </button>
+                            ) : (
+                                <button
+                                    onClick={onAdmin}
+                                    className="px-4 py-2 bg-emerald-500 text-white hover:bg-emerald-600 text-sm font-black rounded-xl transition-all shadow-[0_4px_20px_rgba(16,185,129,0.4)] flex items-center gap-2 animate-pulse"
+                                >
+                                    <Target className="w-4 h-4" />
+                                    GO TO ADMIN
+                                </button>
+                            )
+                        )}
+                    </div>
                     <div className="text-right hidden sm:block">
                         <div className="text-sm font-bold text-white tracking-wide">{user.name}</div>
                         <div className="text-xs font-medium text-white/70 bg-white/10 px-2 py-0.5 rounded uppercase tracking-wider mt-1 inline-block">
