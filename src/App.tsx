@@ -100,15 +100,18 @@ function AppContent({ user, setUser }: { user: UserInfo | null, setUser: (u: Use
         user={user}
         onLogout={handleLogout}
         onAdmin={() => {
-          const adminPass = (import.meta.env.VITE_ADMIN_PASSWORD || 'admin123').toLowerCase();
-          const password = window.prompt("Enter Admin Security Passcode:");
-          
-          if (password?.toLowerCase() === adminPass) {
-            console.log("Admin access granted.");
-            setCurrentView('admin');
-          } else if (password !== null) {
-            alert(`Access Denied. Passcode is incorrect. (Default is 'admin123')`);
-          }
+          // Wrap in setTimeout to prevent accidental prompt closing on some browsers
+          setTimeout(() => {
+            const adminPass = (import.meta.env.VITE_ADMIN_PASSWORD || 'admin123').toLowerCase();
+            const password = window.prompt("Enter Admin Security Passcode:");
+            
+            if (password?.toLowerCase() === adminPass) {
+              console.log("Admin access granted.");
+              setCurrentView('admin');
+            } else if (password !== null) {
+              alert(`Access Denied. (Default is 'admin123')`);
+            }
+          }, 100);
         }}
         onDashboard={handleReturnToDashboard}
         isAdminView={currentView === 'admin'}
