@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 import { db } from '../lib/firebase';
-import { Trophy, Target, BookOpen, AlertCircle, RefreshCw, Bot, Cpu, User } from 'lucide-react';
+import { Trophy, Target, BookOpen, AlertCircle, RefreshCw, Bot, Cpu } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 
 interface UserData {
