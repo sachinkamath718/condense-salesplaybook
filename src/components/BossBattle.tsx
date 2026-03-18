@@ -186,7 +186,8 @@ export const BossBattle: React.FC<BossBattleProps> = ({ onComplete, onBack }) =>
             });
 
             if (!proxyRes.ok) {
-                throw new Error(`Proxy error: ${proxyRes.status}`);
+                const errorData = await proxyRes.json() as { detail?: string, error?: string };
+                throw new Error(errorData.detail || errorData.error || `Proxy error: ${proxyRes.status}`);
             }
 
             const proxyData = await proxyRes.json() as { text?: string; error?: string };
@@ -212,12 +213,13 @@ export const BossBattle: React.FC<BossBattleProps> = ({ onComplete, onBack }) =>
                 setTurnsLeft(prev => prev - 1);
             }
 
-        } catch (error) {
+        } catch (error: any) {
             console.error("Gemini API Error:", error);
+            const errorMessage = error.message || 'Could not reach the CTO.';
             setMessages(prev => [...prev, {
                 id: `error - ${Date.now()} `,
                 role: 'system',
-                content: 'SYSTEM CONNECTION ERROR. Could not reach the CTO. Please ensure GEMINI_API_KEY is properly set in the environment to enable Live AI Simulation.'
+                content: `SYSTEM CONNECTION ERROR: ${errorMessage} \n\nPlease ensure GEMINI_API_KEY is properly set in Vercel environment variables and the app is REDEPLOYED.`
             }]);
         } finally {
             setIsTyping(false);
