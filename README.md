@@ -71,3 +71,6 @@ export default defineConfig([
   },  
 ])
 ```
+
+---
+*Deployment Trigger: Fixed git credentials for Vercel Hobby plan.*
