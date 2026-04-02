@@ -292,7 +292,15 @@ export const BossBattle: React.FC<BossBattleProps> = ({ onComplete, onBack }) =>
         const stage = Math.min(updatedScore, SCORE_TO_WIN); // 0, 1, 2, or 3
         const isWin = updatedScore >= SCORE_TO_WIN;
 
-        // ── 4. Build the structured prompt for Gemini ────────────────────
+        // ─── 4. Build the structured prompt (production-grade prompt engineering) ───
+        // Patterns borrowed from Cursor, Lovable, v0 system prompts:
+        // - Identity block (who you are, one crisp sentence)
+        // - Grounded product facts (no hallucination)
+        // - Conversation state block (current score, stage, what was said)
+        // - Rules block with MUST/NEVER/ALWAYS
+        // - Per-stage few-shot examples (show don't just tell)
+        // - Strict output format constraint
+
         const historyText = messages
             .filter(m => m.role !== 'system')
             .map(m => `${m.role === 'model' ? selectedPersona.name + ':' : 'Sales Rep:'} ${m.content}`)
@@ -300,30 +308,86 @@ export const BossBattle: React.FC<BossBattleProps> = ({ onComplete, onBack }) =>
 
         const stageInstruction = selectedPersona.stageContext[stage];
 
+        // Per-stage few-shot examples to anchor the model's tone
+        const fewShotByStage: Record<string, string> = {
+            developer: [
+                // Stage 0
+                `Sales Rep: "Condense is a streaming platform built on Rust."\n${selectedPersona.name}: "That's a starting point, but Rust alone doesn't solve our consumer group rebalancing hell. How does Condense actually handle partition reassignment without stopping message processing?"`,
+                // Stage 1
+                `Sales Rep: "Condense eliminates Zookeeper entirely, so no more ensemble management."\n${selectedPersona.name}: "Okay, that's actually useful — Zookeeper has cost us 3 on-call incidents this quarter. But what does the developer workflow look like? Can my team define a pipeline in code or are we back to YAML configs?"`,
+                // Stage 2
+                `Sales Rep: "You define pipelines in code, deploy in minutes, and it auto-scales without manual partition tuning."\n${selectedPersona.name}: "That's better. One last thing — what's the story for zero-downtime upgrades on live pipelines? Kafka rolling restarts have bitten us before."`,
+                // Stage 3
+                `Sales Rep: "Condense handles hot upgrades without consumer lag, no restart needed."\n${selectedPersona.name}: "That's solid. You've addressed the rebalancing, the DX, and the ops overhead. Let's book a meeting — I'll pull in our platform lead."`,
+            ][Math.min(stage, 3)],
+            vp: [
+                `Sales Rep: "Condense is easier to use than Kafka."\n${selectedPersona.name}: "How much easier? I need concrete numbers. How long does it take a product engineer with zero Kafka experience to ship a working pipeline?"`,
+                `Sales Rep: "A junior engineer can go from setup to a live pipeline in under a day using Condense's guided SDK."\n${selectedPersona.name}: "That's actually promising — we onboard 4-5 engineers a quarter. What's the cost model? Are we paying per message like Confluent, or is it infrastructure-based?"`,
+                `Sales Rep: "It's infrastructure-based BYOC — you pay only your cloud provider, no per-message fees."\n${selectedPersona.name}: "Okay, that's a meaningful TCO improvement. Last question — does it scale automatically if we 5x our event volume during peak season?"`,
+                `Sales Rep: "It auto-scales to infinity, no manual cluster tuning needed."\n${selectedPersona.name}: "You've addressed hiring friction, onboarding speed, cost model, and scale. That's everything I needed. Yes, let's connect on a call — I'll loop in my engineering leads."`,
+            ][Math.min(stage, 3)],
+            executive: [
+                `Sales Rep: "Condense is cheaper than MSK."\n${selectedPersona.name}: "Give me a number, not a claim. We process 30TB/month. What's the actual cost delta versus MSK at that scale?"`,
+                `Sales Rep: "At 30TB/month, typical customers see 60-70% cost reduction versus MSK because you're paying cloud infra only — no Confluent license on top."\n${selectedPersona.name}: "That's material. But my bigger concern is data residency. Does our data ever leave our cloud account, or does Condense run fully inside our VPC?"`,
+                `Sales Rep: "Condense is fully BYOC — it deploys inside your VPC, your cloud account. Zero data leaves your perimeter."\n${selectedPersona.name}: "Good. That addresses our compliance posture. Last thing — what's your SLA and support model? If this goes down at 2am, who do we call?"`,
+                `Sales Rep: "We offer 99.99% SLA with dedicated enterprise support and a named account engineer."\n${selectedPersona.name}: "Cost, data sovereignty, compliance, and enterprise support — you've covered all four. Let's connect on a call — I'll bring our security architect."`,
+            ][Math.min(stage, 3)],
+        };
+
+        const fewShotExample = fewShotByStage[selectedPersona.id] || '';
+
         const prompt = isWin
-            ? `You are ${selectedPersona.name}, ${selectedPersona.title}. You have just been fully convinced by this sales rep after a professional conversation about Condense.
-            
-Conversation so far:
+            ? `## IDENTITY
+You are ${selectedPersona.name}, ${selectedPersona.title}.
+
+## TASK
+The sales conversation is over. The sales rep has fully addressed your concerns. You must now close the deal.
+
+## CLOSING INSTRUCTION
+Output EXACTLY this sentence and nothing else:
+"${selectedPersona.closingMessage}"
+
+Do not add any preamble, do not modify the sentence, do not add any follow-up.`
+
+            : `## IDENTITY
+You are ${selectedPersona.name}, ${selectedPersona.title}. Traits: ${selectedPersona.traits.join(', ')}.
+
+## PRODUCT FACTS (grounded truth — do not invent anything outside this)
+Condense is a cloud-native data streaming platform built on Rust.
+- Replaces Apache Kafka entirely
+- Eliminates Zookeeper (no ensemble, no ops overhead)
+- Infinite auto-scaling with no manual partition tuning
+- BYOC model: deploys inside the customer's own VPC — data never leaves their cloud
+- Developers define pipelines in code; deploy in minutes with no Kafka expertise required
+- Cost model: infrastructure-only, no per-message fees like Confluent
+
+## CONVERSATION STATE
+- Current stage: ${stage} of ${SCORE_TO_WIN} (${stage === 0 ? 'not convinced yet' : stage < SCORE_TO_WIN - 1 ? 'slightly interested' : 'almost convinced — one more good answer needed'})
+- Points scored so far: ${score}/${SCORE_TO_WIN}
+
+## CONVERSATION HISTORY
 ${historyText}
 Sales Rep: ${userText}
 
-The sales rep has successfully addressed all your core concerns. You must now close the conversation positively.
-Say this EXACTLY as your final response: "${selectedPersona.closingMessage}". Do not add any other sentences before or after. Be warm and professional.`
-            : `You are ${selectedPersona.name}, ${selectedPersona.title}. Your traits: ${selectedPersona.traits.join(', ')}.
-You are in a sales conversation about "Condense" — a Rust-based cloud-native streaming platform that replaces Kafka, eliminates Zookeeper, and uses BYOC (Bring Your Own Cloud) inside the customer's VPC.
+## STAGE INSTRUCTION
+${stageInstruction}
 
-Conversation so far:
-${historyText}
-Sales Rep: ${userText}
+## RULES
+1. MUST stay in character as ${selectedPersona.name} at all times.
+2. MUST ask exactly ONE follow-up question at the end. Never ask more than one.
+3. MUST keep your response to 2 sentences maximum.
+4. NEVER agree to book a meeting or say "let's connect" — that is FORBIDDEN before stage ${SCORE_TO_WIN}.
+5. NEVER say "great point", "that's interesting", "I like that" or give generic praise.
+6. NEVER invent product features not listed in PRODUCT FACTS above.
+7. ALWAYS be skeptical but professional — push for specifics, not vague claims.
+8. If the sales rep is still vague, push harder for a concrete answer.
 
-STAGE INSTRUCTION (follow this strictly): ${stageInstruction}
+## FEW-SHOT EXAMPLE (use this as your tone and format reference)
+${fewShotExample}
 
-Rules:
-- Stay in character. You are a busy, skeptical professional.
-- Do NOT be satisfied yet — this is stage ${stage} of 3.
-- Do NOT offer to book a call or say yes. Ask ONE pointed follow-up question.
-- Keep your response to 2-3 sentences maximum.
-- No buzzwords or generic praise.`;
+## YOUR RESPONSE
+Write your in-character response now. 2 sentences max. End with a question.`;
+
 
         try {
             // ── 5. Call Gemini proxy ───────────────────────────────────────
