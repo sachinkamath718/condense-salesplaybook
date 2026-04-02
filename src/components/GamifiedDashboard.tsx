@@ -206,7 +206,7 @@ export const GamifiedDashboard: React.FC<GamifiedDashboardProps> = ({ onSelectMi
                     <RetakeQuizPopup
                         missionTitle={fullPlaybookData.find(c => c.id === retakeMissionId)?.title || ""}
                         previousScore={missionScores[retakeMissionId]?.score || 0}
-                        totalQuestions={missionScores[retakeMissionId]?.total || fullPlaybookData.find(c => c.id === retakeMissionId)?.quiz?.length || 5}
+                        totalQuestions={missionScores[retakeMissionId]?.total ?? fullPlaybookData.find(c => c.id === retakeMissionId)?.quiz?.length ?? 0}
                         onStart={() => {
                             onSelectMission(retakeMissionId);
                             setRetakeMissionId(null);
