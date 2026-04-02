@@ -31,6 +31,8 @@ interface PersonaDef {
     // Fallback responses if Gemini API is unavailable (indexed by stage 0-3)
     fallbackResponses: string[];
     closingMessage: string;
+    // In-character rebukes when user sends irrelevant/nonsense messages
+    rebukes: string[];
 }
 
 const PERSONAS: Record<string, PersonaDef> = {
@@ -60,7 +62,12 @@ const PERSONAS: Record<string, PersonaDef> = {
             "Okay, I'm tracking. Our main blocker is deployment reliability — how does Condense handle zero-downtime upgrades for running pipelines?",
             "Alright, you've addressed what I care about. Let's book a meeting — I'll loop in our platform team."
         ],
-        closingMessage: "Alright, you've addressed what I care about — performance, DX, and no Zookeeper babysitting. Let's book a meeting and I'll loop in our platform team."
+        closingMessage: "Alright, you've addressed what I care about — performance, DX, and no Zookeeper babysitting. Let's book a meeting and I'll loop in our platform team.",
+        rebukes: [
+            "Excuse me? I asked a very specific technical question and you're giving me this? You're completely off-topic — what nonsense is this? Address the question.",
+            "That has nothing to do with what I asked. I'm a backend engineer, not a motivational speaker's audience. Stop deviating from the topic.",
+            "I don't know what that means in context of our conversation. This is a technical discussion — please keep it relevant or you're wasting both our time."
+        ]
     },
     vp: {
         id: 'vp',
@@ -88,7 +95,12 @@ const PERSONAS: Record<string, PersonaDef> = {
             "Fair enough on cost. My final concern is scale — if we grow 10x in connected devices, does Condense scale automatically or do we need to manually tune clusters?",
             "That covers what I needed to hear — team velocity, no specialist required, and predictable cost. Yes, let's connect on a call and bring in my engineering leads."
         ],
-        closingMessage: "That covers what I needed — team velocity, no specialist required, and predictable cost. Yes, let's connect on a call and bring in my engineering leads."
+        closingMessage: "That covers what I needed — team velocity, no specialist required, and predictable cost. Yes, let's connect on a call and bring in my engineering leads.",
+        rebukes: [
+            "I'm sorry — what does that even mean in the context of our conversation? You're completely deviating from the topic. I asked you about my team's velocity, not this.",
+            "That's not an answer to what I asked. I have limited time and I need substantive responses, not noise. Please stay on topic.",
+            "That's irrelevant to this discussion. If you can't answer the actual question, I'm going to have to end this conversation."
+        ]
     },
     executive: {
         id: 'executive',
@@ -117,7 +129,12 @@ const PERSONAS: Record<string, PersonaDef> = {
             "Fair on BYOC security. Last thing: what's your SLA? If this goes down at 2am, what's our remediation path and who do we call?",
             "You've answered my three questions: cost clarity, data sovereignty, and enterprise support. Let's connect on a call — I'll bring our security architect."
         ],
-        closingMessage: "You've answered my three questions: cost clarity, data sovereignty in our own VPC, and enterprise support path. Let's connect on a call — I'll bring our security architect."
+        closingMessage: "You've answered my three questions: cost clarity, data sovereignty in our own VPC, and enterprise support path. Let's connect on a call — I'll bring our security architect.",
+        rebukes: [
+            "What? You're completely off-topic. I don't have time for nonsense — I have a board meeting in 20 minutes. Ask me something relevant about cost or security, or end this call.",
+            "That has nothing to do with the question I asked. This is a C-suite conversation, not a casual chat. You're deviating from the topic entirely.",
+            "I'm going to stop you right there. That response makes no sense in this context. If you can't speak to my actual concerns, this meeting is over."
+        ]
     }
 };
 
@@ -138,11 +155,33 @@ function scoreMessage(text: string, persona: PersonaDef, usedKeywords: Set<strin
 
 function isIrrelevant(text: string): boolean {
     const trimmed = text.trim().toLowerCase();
-    const shortGibberish = trimmed.length < 8;
-    const greetings = ['hi', 'hello', 'hey', 'bye', 'goodbye', 'ok', 'okay', 'sure', 'lol', 'haha', 'test', 'testing'];
-    const isGreeting = greetings.some(g => trimmed === g || trimmed.startsWith(g + ' ') || trimmed.endsWith(' ' + g));
     const wordCount = trimmed.split(/\s+/).length;
-    return (shortGibberish && wordCount <= 2) || isGreeting;
+
+    // Very short, low-effort messages
+    if (wordCount <= 2 && trimmed.length < 15) return true;
+
+    // Greetings, fillers, and single-word non-answers
+    const irrelevantPhrases = [
+        'hi', 'hello', 'hey', 'bye', 'goodbye', 'ok', 'okay', 'sure', 'lol', 'haha',
+        'test', 'testing', 'yes', 'no', 'maybe', 'idk', 'cool', 'nice', 'great', 'good',
+        'fine', 'alright', 'whatever', 'dunno', 'nope', 'yep', 'yup'
+    ];
+    if (irrelevantPhrases.some(p => trimmed === p)) return true;
+
+    // Command-style demands (trying to trick the bot into agreeing)
+    const commandPhrases = [
+        'get convinced', 'be convinced', 'just say yes', 'say yes', 'convince yourself',
+        'just agree', 'agree now', 'stop asking', 'say ok', 'close the deal',
+        'book the meeting', 'just book', 'you are convinced', 'you should be convinced',
+        'i win', 'game over', 'end this', 'skip this'
+    ];
+    if (commandPhrases.some(p => trimmed.includes(p))) return true;
+
+    // Gibberish / random characters (no real words)
+    const realWordRatio = trimmed.split(/\s+/).filter(w => w.length >= 3).length / wordCount;
+    if (wordCount >= 2 && realWordRatio < 0.4) return true;
+
+    return false;
 }
 
 // ─── COMPONENT ─────────────────────────────────────────────────────────────
@@ -191,14 +230,17 @@ export const BossBattle: React.FC<BossBattleProps> = ({ onComplete, onBack }) =>
         const userText = inputValue.trim();
         setInputValue('');
 
-        // ── 1. Check for irrelevant/unethical input ──────────────────────
+        // ── 1. Check for irrelevant/off-topic input ───────────────────────
         if (isIrrelevant(userText)) {
-            const warnMsg: Message = {
-                id: `warn-${Date.now()}`,
-                role: 'system',
-                content: `⚠️ WARNING: "${userText}" is not a relevant or professional response. This is a sales conversation — please address the concern raised. This attempt has been counted.`
+            // Pick a random in-character rebuke from the persona
+            const rebukeList = selectedPersona.rebukes;
+            const rebuke = rebukeList[Math.floor(Math.random() * rebukeList.length)];
+            const rebukeMsg: Message = {
+                id: `rebuke-${Date.now()}`,
+                role: 'model',
+                content: rebuke
             };
-            setMessages(prev => [...prev, { id: `user-${Date.now()}`, role: 'user', content: userText }, warnMsg]);
+            setMessages(prev => [...prev, { id: `user-${Date.now()}`, role: 'user', content: userText }, rebukeMsg]);
             const newTurns = turnsLeft - 1;
             setTurnsLeft(newTurns);
             if (newTurns <= 0) setBattleStatus('lost');
