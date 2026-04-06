@@ -302,11 +302,31 @@ export const BossBattle: React.FC<BossBattleProps> = ({ onComplete, onBack }) =>
         setMessages(prev => [...prev, newUserMessage]);
         setIsTyping(true);
 
-        // ── 2. Score the user's response ─────────────────────────────────
-        const { newScore, newUsed } = scoreMessage(userText, selectedPersona, usedKeywords);
-        const updatedScore = score + newScore;
+        // ── 2. NEW SEMANTIC EVALUATION ──────────────────────────────────
+        let isPass = false;
+        try {
+            const currentStageContext = selectedPersona.stageContext[Math.min(score, SCORE_TO_WIN)];
+            const evalRes = await fetch('/api/evaluate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userText,
+                    stageContext: currentStageContext,
+                    personaName: selectedPersona.name,
+                }),
+            });
+            const evalData = await evalRes.json();
+            if (evalData.success) {
+                isPass = true;
+            }
+        } catch(e) {
+            console.error("Eval error", e);
+            // Fallback to basic keyword matching if API fails
+            isPass = scoreMessage(userText, selectedPersona, usedKeywords).newScore > 0;
+        }
+
+        const updatedScore = score + (isPass ? 1 : 0);
         setScore(updatedScore);
-        setUsedKeywords(newUsed);
 
         // ── 3. Determine conversation stage for the AI prompt ────────────
         const stage = Math.min(updatedScore, SCORE_TO_WIN); // 0, 1, 2, or 3
@@ -410,41 +430,50 @@ Write your in-character response now. 2 sentences max. End with a question.`;
 
 
         try {
-            let botText = '';
+            let finalBotText = '';
             let newTurns = turnsLeft;
+            let didStream = false;
 
             if (isWin) {
-                botText = selectedPersona.closingMessage;
+                finalBotText = selectedPersona.closingMessage;
             } else if (turnsLeft === 1) { // It's their last turn and they didn't win
-                botText = selectedPersona.dismissalMessage;
+                finalBotText = selectedPersona.dismissalMessage;
                 newTurns = 0;
             } else {
                 newTurns = turnsLeft - 1;
-                // ── 5. Call Gemini proxy ───────────────────────────────────────
+                // ── 5. Stream Gemini API Output ───────────────────────────────────────
                 const proxyRes = await fetch('/api/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ prompt }),
                 });
 
-                if (!proxyRes.ok) {
-                    botText = selectedPersona.fallbackResponses[Math.min(stage, selectedPersona.fallbackResponses.length - 2)];
+                if (!proxyRes.ok || !proxyRes.body) {
+                    finalBotText = selectedPersona.fallbackResponses[Math.min(stage, selectedPersona.fallbackResponses.length - 2)];
                 } else {
-                    const proxyData = await proxyRes.json() as { text?: string; error?: string };
-                    botText = proxyData.text || selectedPersona.fallbackResponses[stage];
-                }
+                    didStream = true;
+                    const reader = proxyRes.body.getReader();
+                    const decoder = new TextDecoder();
+                    
+                    setIsTyping(false); // Stop spinner, start streaming text
+                    const botMsgId = `bot-${Date.now()}`;
+                    setMessages(prev => [...prev, { id: botMsgId, role: 'model', content: "" }]);
 
-                // Strip any [[PITCH_SUCCESSFUL]] Gemini might hallucinate
-                botText = botText.replace('[[PITCH_SUCCESSFUL]]', '').trim();
+                    while (true) {
+                        const { done, value } = await reader.read();
+                        if (done) break;
+                        finalBotText += decoder.decode(value, { stream: true });
+                        
+                        setMessages(prev => prev.map(m => m.id === botMsgId ? { ...m, content: finalBotText } : m));
+                    }
+                }
             }
 
-            const newBotMessage: Message = {
-                id: `bot-${Date.now()}`,
-                role: 'model',
-                content: botText
-            };
-
-            setMessages(prev => [...prev, newBotMessage]);
+            const newBotMessage: Message = { id: `bot-${Date.now()}`, role: 'model', content: finalBotText };
+            if (!didStream) {
+                 setIsTyping(false);
+                 setMessages(prev => [...prev, newBotMessage]);
+            }
 
             // ── 6. Our code — not Gemini — decides the win/loss ───────────
             if (isWin) {
