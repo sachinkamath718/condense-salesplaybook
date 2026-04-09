@@ -343,9 +343,9 @@ export const BossBattle: React.FC<BossBattleProps> = ({ onComplete, onBack }) =>
         } else if (isPartial && evalHint) {
             behaviorInstruction = `The trainee gave a partial answer. Acknowledge what they got right, then ask this focused follow-up: "${evalHint}"`;
         } else if (isFail && consecutiveFails >= 1) {
-            behaviorInstruction = `The trainee is finding this challenging. Simplify your question significantly — make it more direct and easier to answer. Be warm and encouraging.`;
+            behaviorInstruction = `The trainee is repeatedly giving completely off-topic, irrelevant, or incorrect responses. Give them a STRICT, professional warning that they are wasting your time, do NOT answer any unrelated questions, and ask the original question one last time.`;
         } else if (isFail) {
-            behaviorInstruction = `The trainee didn't quite answer correctly. Gently redirect them and re-ask the same question in a simpler, clearer way.`;
+            behaviorInstruction = `The trainee gave a completely off-topic or incorrect response. STRICTLY remind them to remain professional, DO NOT answer any off-topic questions (like math or coding puzzles), and redirect them to focus on the business concern.`;
         } else {
             behaviorInstruction = stageInstruction;
         }
@@ -380,10 +380,12 @@ ${behaviorInstruction}
 ${salesFocusedContext ? '\nIMPORTANT: Keep your response focused on the business and sales value of Condense (ROI, team productivity, simplicity, cost savings).' : ''}
 
 Rules:
-- Be professional, respectful, and encouraging — never rude or harsh
+- CRITICAL: You are the PROSPECT, not the sales rep. You do not know about Condense. DO NOT explain the product. If the Trainee asks you what it is, remind them gently that they should be explaining it to you!
+- STRICTLY IGNORE OFF-TOPIC QUESTIONS: If the Trainee asks you random questions (math, coding, jokes, facts), REFUSE to answer. Warn them strictly that this is a professional meeting.
+- Do not let the Trainee avoid answering your concerns.
 - Keep your response to 2-3 sentences maximum
 - End with exactly ONE clear, simple question
-- Do not give generic praise like "great point"
+- Do not give generic praise if they are off-topic or failing.
 - Do not agree to book a meeting until the trainee scores ${SCORE_TO_WIN} points`;
 
         try {
