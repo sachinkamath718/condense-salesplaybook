@@ -267,7 +267,7 @@ export default function App() {
     const activeCompany = localStorage.getItem('condense_active_company');
     return (activeSession && activeCompany) ? { name: activeSession, company: activeCompany } : null;
   });
-  const [isInitializing, setIsInitializing] = useState(false);
+
 
   // Background verify on mount
   useEffect(() => {
@@ -302,7 +302,6 @@ export default function App() {
     verifyUser();
   }, []);
 
-  if (isInitializing) return null;
 
   return (
     <GameProvider key={user?.name || 'anonymous'} userId={user?.name}>
