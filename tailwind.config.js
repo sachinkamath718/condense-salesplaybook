@@ -10,30 +10,30 @@ export default {
                 border: "hsl(var(--border))",
                 input: "hsl(var(--input))",
                 ring: "hsl(var(--ring))",
-                background: "#09090b", // zinc-950
-                foreground: "#fafafa", // zinc-50
+                background: "#f9fafb", // gray-50 — light page bg
+                foreground: "#111827", // gray-900 — dark text
                 primary: {
-                    DEFAULT: "#10b981", // emerald-500
+                    DEFAULT: "#2563eb", // blue-600
                     foreground: "#ffffff",
                 },
                 secondary: {
-                    DEFAULT: "#27272a", // zinc-800
-                    foreground: "#fafafa",
+                    DEFAULT: "#f3f4f6", // gray-100
+                    foreground: "#1f2937", // gray-800
                 },
                 destructive: {
                     DEFAULT: "#ef4444", // red-500
                     foreground: "#ffffff",
                 },
                 muted: {
-                    DEFAULT: "#18181b", // zinc-900
-                    foreground: "#71717a", // zinc-500
+                    DEFAULT: "#f9fafb", // gray-50
+                    foreground: "#6b7280", // gray-500
                 },
                 accent: {
-                    DEFAULT: "#10b981", // emerald-500
+                    DEFAULT: "#2563eb", // blue-600
                     foreground: "#ffffff",
                 },
                 success: {
-                    DEFAULT: "#22c55e", // green-500
+                    DEFAULT: "#16a34a", // green-600
                     foreground: "#ffffff"
                 },
                 sidebar: {
