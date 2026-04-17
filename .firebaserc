@@ -1,7 +1,7 @@
 {
   "projects": {
-    "default": "condense-salesbook"
+    "default": "condense-salesplaybook"
   },
   "targets": {},
   "etags": {}
-}
+}
