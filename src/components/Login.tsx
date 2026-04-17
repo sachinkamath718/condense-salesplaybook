@@ -37,7 +37,7 @@ export const Login: React.FC<LoginProps> = ({ onStart }) => {
                 .from('users')
                 .select('*')
                 .eq('username', username)
-                .single();
+                .maybeSingle(); // returns null (not error) when user doesn't exist
 
             if (isSignUp) {
                 if (!company.trim()) { setLoading(false); return; }
@@ -87,9 +87,10 @@ export const Login: React.FC<LoginProps> = ({ onStart }) => {
                 localStorage.setItem('condense_active_company', existingUser.company_code);
                 onStart(username, existingUser.company_code, true);
             }
-        } catch (err) {
+        } catch (err: any) {
             console.error('Login Error', err);
-            setError('Connection error. Please check your internet and try again.');
+            const msg = err?.message || err?.error_description || JSON.stringify(err);
+            setError(`Error: ${msg}`);
         } finally {
             setLoading(false);
         }
