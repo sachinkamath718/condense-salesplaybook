@@ -49,14 +49,14 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({ chapterId, onComplete })
     if (!quiz || quiz.length === 0) {
         return (
             <div className="max-w-3xl mx-auto px-4 py-20 text-center">
-                <h2 className="text-3xl font-bold text-white mb-6">Mission Complete</h2>
-                <p className="text-zinc-400 mb-8">No quiz available for this mission yet.</p>
+                <h2 className="text-3xl font-bold text-gray-900 mb-6">Mission Complete</h2>
+                <p className="text-gray-500 mb-8">No quiz available for this mission yet.</p>
                 <button
                     onClick={() => {
                         completeMission(chapterId);
                         onComplete();
                     }}
-                    className="px-8 py-4 bg-emerald-500 text-white font-bold rounded-xl hover:bg-emerald-400 transition-colors"
+                    className="px-8 py-4 bg-emerald-500 text-gray-900 font-bold rounded-xl hover:bg-emerald-400 transition-colors"
                 >
                     Return to Dashboard
                 </button>
@@ -124,7 +124,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({ chapterId, onComplete })
                 <motion.div
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    className="bg-zinc-950 border-2 border-red-500/50 p-8 sm:p-16 rounded-[2.5rem] shadow-[0_0_100px_rgba(239,68,68,0.15)] relative overflow-hidden"
+                    className="bg-gray-50 border-2 border-red-500/50 p-8 sm:p-16 rounded-[2.5rem] shadow-[0_0_100px_rgba(239,68,68,0.15)] relative overflow-hidden"
                 >
                     <div className="absolute inset-0 bg-red-500/5 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-red-900/40 via-transparent to-transparent pointer-events-none" />
 
@@ -142,7 +142,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({ chapterId, onComplete })
                             initial={{ y: -20, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             transition={{ delay: 0.4 }}
-                            className="text-3xl sm:text-5xl font-black text-white mb-4 tracking-tight drop-shadow-[0_0_15px_rgba(239,68,68,0.5)]"
+                            className="text-3xl sm:text-5xl font-black text-gray-900 mb-4 tracking-tight drop-shadow-[0_0_15px_rgba(239,68,68,0.5)]"
                         >
                             INCOMING MESSAGE
                         </motion.h2>
@@ -160,7 +160,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({ chapterId, onComplete })
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.8 }}
-                            className="text-zinc-400 text-lg mb-10 max-w-xl mx-auto leading-relaxed"
+                            className="text-gray-500 text-lg mb-10 max-w-xl mx-auto leading-relaxed"
                         >
                             You have proven your skills. Do you have what it takes to pass the final exam? The Boss Battle simulation is available on your dashboard whenever you are ready.
                         </motion.p>
@@ -170,7 +170,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({ chapterId, onComplete })
                             animate={{ y: 0, opacity: 1 }}
                             transition={{ delay: 1 }}
                             onClick={onComplete}
-                            className="px-10 py-5 bg-red-600/90 text-white font-bold rounded-2xl hover:bg-red-500 transition-all hover:shadow-[0_0_30px_rgba(239,68,68,0.4)] text-lg w-full sm:w-auto uppercase tracking-wider relative overflow-hidden group border border-red-500/50"
+                            className="px-10 py-5 bg-red-600/90 text-gray-900 font-bold rounded-2xl hover:bg-red-500 transition-all hover:shadow-[0_0_30px_rgba(239,68,68,0.4)] text-lg w-full sm:w-auto uppercase tracking-wider relative overflow-hidden group border border-red-500/50"
                         >
                             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -tranzinc-x-full group-hover:animate-shimmer" />
                             Acknowledge & Return
@@ -189,7 +189,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({ chapterId, onComplete })
                 <motion.div
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    className={`bg-zinc-950 border-2 ${isPassed ? 'border-emerald-500/50 shadow-[0_0_100px_rgba(16,185,129,0.15)]' : 'border-red-500/50 shadow-[0_0_100px_rgba(239,68,68,0.15)]'} p-8 sm:p-16 rounded-[2.5rem] relative overflow-hidden`}
+                    className={`bg-gray-50 border-2 ${isPassed ? 'border-emerald-500/50 shadow-[0_0_100px_rgba(16,185,129,0.15)]' : 'border-red-500/50 shadow-[0_0_100px_rgba(239,68,68,0.15)]'} p-8 sm:p-16 rounded-[2.5rem] relative overflow-hidden`}
                 >
                     <div className={`absolute inset-0 ${isPassed ? 'bg-emerald-500/5' : 'bg-red-500/5'} bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] ${isPassed ? 'from-emerald-900/40' : 'from-red-900/40'} via-transparent to-transparent pointer-events-none`} />
 
@@ -203,11 +203,11 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({ chapterId, onComplete })
                             {isPassed ? <CheckCircle2 className="w-12 h-12" /> : <XCircle className="w-12 h-12" />}
                         </motion.div>
 
-                        <h2 className={`text-4xl font-black mb-4 ${isPassed ? 'text-white' : 'text-red-500'}`}>
+                        <h2 className={`text-4xl font-black mb-4 ${isPassed ? 'text-gray-900' : 'text-red-500'}`}>
                             {isPassed ? 'MISSION ACCOMPLISHED' : 'MISSION FAILED'}
                         </h2>
 
-                        <p className="text-xl text-zinc-300 mb-8">
+                        <p className="text-xl text-gray-700 mb-8">
                             You scored <span className={`font-bold ${isPassed ? 'text-emerald-400' : 'text-red-400'}`}>{sessionScore}</span> out of {quiz!.length} questions correctly.
                             {!isPassed && ` (Requires ${miniCorrectNeeded} correct answers to pass - 65%)`}
                         </p>
@@ -222,14 +222,14 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({ chapterId, onComplete })
                             {isPassed ? (
                                 <button
                                     onClick={handleFinishMission}
-                                    className="px-10 py-4 bg-emerald-500 text-white font-bold rounded-2xl hover:bg-emerald-400 transition-all text-lg flex items-center gap-3"
+                                    className="px-10 py-4 bg-emerald-500 text-gray-900 font-bold rounded-2xl hover:bg-emerald-400 transition-all text-lg flex items-center gap-3"
                                 >
                                     Continue <ArrowRight className="w-5 h-5" />
                                 </button>
                             ) : (
                                 <button
                                     onClick={handleRetryMission}
-                                    className="px-10 py-4 bg-red-600/90 text-white font-bold rounded-2xl hover:bg-red-500 transition-all text-lg flex items-center gap-3 border border-red-500/50"
+                                    className="px-10 py-4 bg-red-600/90 text-gray-900 font-bold rounded-2xl hover:bg-red-500 transition-all text-lg flex items-center gap-3 border border-red-500/50"
                                 >
                                     Retry Mission
                                 </button>
@@ -237,7 +237,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({ chapterId, onComplete })
                             {(!isPassed) && (
                                 <button
                                     onClick={onComplete}
-                                    className="px-8 py-4 bg-zinc-800 border border-zinc-700 text-zinc-300 font-bold rounded-2xl hover:bg-zinc-700 hover:text-white transition-all text-lg"
+                                    className="px-8 py-4 bg-gray-200 border border-gray-200 text-gray-700 font-bold rounded-2xl hover:bg-gray-300 hover:text-gray-900 transition-all text-lg"
                                 >
                                     Abort
                                 </button>
@@ -253,8 +253,8 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({ chapterId, onComplete })
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-32">
 
             {/* Header progress */}
-            <div className="mb-12 flex items-center justify-between bg-zinc-900 border border-zinc-800 p-4 rounded-2xl">
-                <div className="text-zinc-400 font-bold tracking-widest uppercase text-sm">
+            <div className="mb-12 flex items-center justify-between bg-gray-100 border border-gray-200 p-4 rounded-2xl">
+                <div className="text-gray-500 font-bold tracking-widest uppercase text-sm">
                     Question {currentQuestionIndex + 1} of {quiz!.length}
                 </div>
                 <div className="flex gap-2">
@@ -262,7 +262,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({ chapterId, onComplete })
                         <div
                             key={idx}
                             className={`w-3 h-3 rounded-full ${idx === currentQuestionIndex ? 'bg-emerald-500 shadow-[0_0_10px_rgba(14,165,233,0.8)]' :
-                                idx < currentQuestionIndex ? 'bg-emerald-500/40' : 'bg-zinc-800'
+                                idx < currentQuestionIndex ? 'bg-emerald-500/40' : 'bg-gray-200'
                                 }`}
                         />
                     ))}
@@ -275,11 +275,11 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({ chapterId, onComplete })
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                className="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 sm:p-12 shadow-2xl relative overflow-hidden"
+                className="bg-gray-100 border border-gray-200 rounded-3xl p-8 sm:p-12 shadow-2xl relative overflow-hidden"
             >
                 <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-[80px] -mr-20 -mt-20 pointer-events-none" />
 
-                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white leading-tight mb-12 relative z-10">
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-gray-900 leading-tight mb-12 relative z-10">
                     {currentQuestion.question}
                 </h2>
 
@@ -288,22 +288,22 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({ chapterId, onComplete })
                         const isSelected = selectedOptionIndex === idx;
                         const isCorrectAnswer = option.isCorrect;
 
-                        let buttonStateClass = "bg-zinc-950 border-zinc-800 text-zinc-300 hover:border-emerald-500/50 hover:bg-zinc-800";
+                        let buttonStateClass = "bg-gray-50 border-gray-200 text-gray-700 hover:border-emerald-500/50 hover:bg-gray-200";
                         let icon = null;
 
                         if (isAnswered) {
                             if (isCorrectAnswer) {
-                                buttonStateClass = "bg-green-500/10 border-green-500/50 text-white shadow-[0_0_20px_rgba(34,197,94,0.15)]";
+                                buttonStateClass = "bg-green-500/10 border-green-500/50 text-gray-900 shadow-[0_0_20px_rgba(34,197,94,0.15)]";
                                 icon = <CheckCircle2 className="w-6 h-6 text-green-500" />;
                             } else if (isSelected && !isCorrectAnswer) {
-                                buttonStateClass = "bg-red-500/10 border-red-500/50 text-white";
+                                buttonStateClass = "bg-red-500/10 border-red-500/50 text-gray-900";
                                 icon = <XCircle className="w-6 h-6 text-red-500" />;
                             } else {
-                                buttonStateClass = "bg-zinc-950 border-zinc-800/50 text-zinc-600 opacity-50";
+                                buttonStateClass = "bg-gray-50 border-gray-200/50 text-gray-400 opacity-50";
                             }
                         } else if (isSelected) {
                             // Should not stay here long since isAnswered becomes true immediately, but for safety
-                            buttonStateClass = "bg-emerald-500/20 border-emerald-500 text-white";
+                            buttonStateClass = "bg-emerald-500/20 border-emerald-500 text-gray-900";
                         }
 
                         return (
@@ -316,7 +316,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({ chapterId, onComplete })
                                 <div className="flex items-center gap-6">
                                     <div className={`w-10 h-10 shrink-0 rounded-xl flex items-center justify-center font-bold text-lg transition-colors ${isAnswered && isCorrectAnswer ? 'bg-green-500/20 text-green-400' :
                                         isAnswered && isSelected && !isCorrectAnswer ? 'bg-red-500/20 text-red-400' :
-                                            'bg-zinc-900 border border-zinc-700 text-zinc-400 group-hover:bg-emerald-500/20 group-hover:text-emerald-400 group-hover:border-emerald-500/30'
+                                            'bg-gray-100 border border-gray-200 text-gray-500 group-hover:bg-emerald-500/20 group-hover:text-emerald-400 group-hover:border-emerald-500/30'
                                         }`}>
                                         {optionLetters[idx]}
                                     </div>
@@ -345,7 +345,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({ chapterId, onComplete })
                                     }`}>
                                     {selectedOptionIndex !== null && shuffledOptions[selectedOptionIndex as number].isCorrect ? 'Correct!' : 'Incorrect'}
                                 </h4>
-                                <p className="text-zinc-300 leading-relaxed">
+                                <p className="text-gray-700 leading-relaxed">
                                     {currentQuestion.explanation}
                                 </p>
                             </div>

@@ -100,11 +100,11 @@ export const Login: React.FC<LoginProps> = ({ onStart }) => {
     };
 
     return (
-        <div className="min-h-screen bg-[#020617] flex flex-col items-center justify-center p-6 relative overflow-hidden">
+        <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6 relative overflow-hidden">
             {/* The animated dynamic background */}
             <div className="absolute inset-0 z-0 pointer-events-none">
-                <div className="absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] rounded-full bg-emerald-900/20 blur-[150px] mix-blend-screen animate-pulse duration-[10000ms]" />
-                <div className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-sky-900/20 blur-[120px] mix-blend-screen" />
+                <div className="absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] rounded-full bg-blue-200/20 blur-[150px] mix-blend-screen animate-pulse duration-[10000ms]" />
+                <div className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-indigo-200/20 blur-[120px] mix-blend-screen" />
 
                 {/* Micro-grid overlay for texture */}
                 <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSIvPjwvc3ZnPg==')] opacity-10" />
@@ -119,20 +119,20 @@ export const Login: React.FC<LoginProps> = ({ onStart }) => {
                     transition={{ duration: 0.7, ease: "easeOut" }}
                     className="text-center mb-10"
                 >
-                    <div className="inline-flex items-center justify-center p-4 rounded-[2rem] bg-gradient-to-br from-zinc-800 to-zinc-950 text-emerald-400 mb-8 border border-zinc-700/50 shadow-[0_0_30px_rgba(52,211,153,0.15)] ring-1 ring-white/10">
+                    <div className="inline-flex items-center justify-center p-4 rounded-[2rem] bg-gradient-to-br from-blue-50 to-indigo-100 text-emerald-400 mb-8 border border-gray-200 shadow-[0_0_30px_rgba(52,211,153,0.15)] ">
                         <Cpu className="w-12 h-12" />
                     </div>
-                    <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-white mb-3 drop-shadow-2xl">
+                    <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-gray-900 mb-3 drop-shadow-2xl">
                         Condense<span className="text-emerald-400">.</span>
                     </h1>
-                    <p className="text-zinc-400 text-lg font-medium tracking-widest uppercase">
+                    <p className="text-gray-500 text-lg font-medium tracking-widest uppercase">
                         Enterprise Playbook
                     </p>
                 </motion.div>
 
                 <Card
                     delay={0.2}
-                    className="p-8 md:p-10 bg-[#0b1120]/80 backdrop-blur-3xl border border-white/10 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)] relative overflow-hidden rounded-[2.5rem]"
+                    className="p-8 md:p-10 bg-white/90 backdrop-blur-3xl border border-gray-200 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)] relative overflow-hidden rounded-[2.5rem]"
                 >
                     {/* Interior gradient shine */}
                     <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent pointer-events-none" />
@@ -146,7 +146,7 @@ export const Login: React.FC<LoginProps> = ({ onStart }) => {
                         )}
 
                         <div className="space-y-2 group">
-                            <label htmlFor="name" className="text-xs font-bold uppercase tracking-widest text-zinc-400 ml-1 flex items-center gap-2 transition-colors group-focus-within:text-emerald-400">
+                            <label htmlFor="name" className="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1 flex items-center gap-2 transition-colors group-focus-within:text-blue-600">
                                 <ShieldCheck className="w-3.5 h-3.5" /> Full Identity
                             </label>
                             <input
@@ -155,7 +155,7 @@ export const Login: React.FC<LoginProps> = ({ onStart }) => {
                                 required
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
-                                className="w-full px-5 py-4 rounded-2xl bg-zinc-900/50 border border-zinc-700/50 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all font-medium text-lg shadow-inner"
+                                className="w-full px-5 py-4 rounded-2xl bg-gray-100/70 border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all font-medium text-lg shadow-inner"
                                 placeholder="E.g. John Doe"
                             />
                         </div>
@@ -168,7 +168,7 @@ export const Login: React.FC<LoginProps> = ({ onStart }) => {
                                     exit={{ opacity: 0, height: 0 }}
                                     className="space-y-2 overflow-hidden"
                                 >
-                                    <label htmlFor="company" className="text-xs font-bold uppercase tracking-widest text-zinc-400 ml-1 flex items-center gap-2 mt-2 group-focus-within:text-emerald-400">
+                                    <label htmlFor="company" className="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1 flex items-center gap-2 mt-2 group-focus-within:text-blue-600">
                                         <ShieldCheck className="w-3.5 h-3.5" /> Division Code
                                     </label>
                                     <input
@@ -177,7 +177,7 @@ export const Login: React.FC<LoginProps> = ({ onStart }) => {
                                         required={isSignUp}
                                         value={company}
                                         onChange={(e) => setCompany(e.target.value)}
-                                        className="w-full px-5 py-4 rounded-2xl bg-zinc-900/50 border border-zinc-700/50 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all font-medium text-lg shadow-inner"
+                                        className="w-full px-5 py-4 rounded-2xl bg-gray-100/70 border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all font-medium text-lg shadow-inner"
                                         placeholder="Enter access code..."
                                     />
                                 </motion.div>
@@ -185,7 +185,7 @@ export const Login: React.FC<LoginProps> = ({ onStart }) => {
                         </AnimatePresence>
 
                         <div className="space-y-2 group">
-                            <label htmlFor="passcode" className="text-xs font-bold uppercase tracking-widest text-zinc-400 ml-1 flex items-center gap-2 mt-2 transition-colors group-focus-within:text-emerald-400">
+                            <label htmlFor="passcode" className="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1 flex items-center gap-2 mt-2 transition-colors group-focus-within:text-blue-600">
                                 <Key className="w-3.5 h-3.5" /> Secure Passcode
                             </label>
                             <input
@@ -194,7 +194,7 @@ export const Login: React.FC<LoginProps> = ({ onStart }) => {
                                 required
                                 value={passcode}
                                 onChange={(e) => setPasscode(e.target.value)}
-                                className="w-full px-5 py-4 rounded-2xl bg-zinc-900/50 border border-zinc-700/50 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all font-medium text-lg tracking-widest shadow-inner"
+                                className="w-full px-5 py-4 rounded-2xl bg-gray-100/70 border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all font-medium text-lg tracking-widest shadow-inner"
                                 placeholder="••••••••"
                             />
                         </div>
@@ -204,7 +204,7 @@ export const Login: React.FC<LoginProps> = ({ onStart }) => {
                             whileTap={{ scale: 0.98 }}
                             type="submit"
                             disabled={loading || !name.trim() || !passcode.trim() || (isSignUp && !company.trim())}
-                            className="w-full relative group overflow-hidden flex items-center justify-center gap-3 py-4 px-6 rounded-2xl bg-emerald-500 text-white font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all mt-8 hover:bg-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.3)] ring-1 ring-emerald-400/50"
+                            className="w-full relative group overflow-hidden flex items-center justify-center gap-3 py-4 px-6 rounded-2xl bg-emerald-500 text-gray-900 font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all mt-8 hover:bg-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.3)] ring-1 ring-emerald-400/50"
                         >
                             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -tranzinc-x-full group-hover:animate-shimmer" />
                             {loading ? (
@@ -217,11 +217,11 @@ export const Login: React.FC<LoginProps> = ({ onStart }) => {
                             )}
                         </motion.button>
 
-                        <div className="pt-4 text-center border-t border-zinc-800/80 mt-6">
+                        <div className="pt-4 text-center border-t border-gray-200 mt-6">
                             <button
                                 type="button"
                                 onClick={() => setIsSignUp(!isSignUp)}
-                                className="text-sm font-bold text-zinc-400 hover:text-white transition-colors tracking-wide"
+                                className="text-sm font-bold text-gray-500 hover:text-gray-900 transition-colors tracking-wide"
                             >
                                 {isSignUp
                                     ? "Already registered? Authenticate here."
@@ -229,7 +229,7 @@ export const Login: React.FC<LoginProps> = ({ onStart }) => {
                             </button>
                         </div>
 
-                        <p className="text-center text-xs font-medium tracking-widest uppercase text-zinc-600 pt-2">
+                        <p className="text-center text-xs font-medium tracking-widest uppercase text-gray-400 pt-2">
                             Secure Data Terminal • E2E Encrypted
                         </p>
                     </form>

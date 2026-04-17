@@ -68,7 +68,7 @@ const TooltipWrapper: React.FC<{ term: string; definition: string }> = ({ term, 
                         className="absolute z-50 bottom-full left-1/2 -tranzinc-x-1/2 mb-3 w-64 p-4 rounded-xl bg-black/90 border border-white/20 shadow-2xl backdrop-blur-xl pointer-events-none"
                     >
                         <div className="text-sm font-bold text-accent mb-1.5 tracking-wide">{term}</div>
-                        <div className="text-sm text-zinc-300 leading-relaxed font-normal">{definition}</div>
+                        <div className="text-sm text-gray-700 leading-relaxed font-normal">{definition}</div>
 
                         {/* Arrow */}
                         <div className="absolute top-full left-1/2 -tranzinc-x-1/2 -mt-[1px] border-[6px] border-transparent border-t-white/20" />

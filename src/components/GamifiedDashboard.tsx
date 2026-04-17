@@ -46,7 +46,7 @@ export const GamifiedDashboard: React.FC<GamifiedDashboardProps> = ({ onSelectMi
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 mb-12 shadow-2xl relative overflow-hidden"
+                className="bg-gray-100 border border-gray-200 rounded-3xl p-8 mb-12 shadow-2xl relative overflow-hidden"
             >
                 <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-[100px] -mr-20 -mt-20 pointer-events-none" />
                 <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
@@ -59,25 +59,25 @@ export const GamifiedDashboard: React.FC<GamifiedDashboardProps> = ({ onSelectMi
                                 {isFirebaseConfigured ? 'DATABASE: CLOUD SYNC' : 'DATABASE: LOCAL ONLY'}
                             </div>
                         </div>
-                        <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-2 tracking-tight">
+                        <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-2 tracking-tight">
                             Sales Playbook
                         </h1>
-                        <p className="text-zinc-400 text-lg">Master the architecture. Crush your quota.</p>
+                        <p className="text-gray-500 text-lg">Master the architecture. Crush your quota.</p>
                     </div>
 
-                    <div className="bg-zinc-950/50 p-6 rounded-2xl border border-zinc-800">
+                    <div className="bg-gray-50/50 p-6 rounded-2xl border border-gray-200">
                         <div className="flex justify-between items-end mb-2">
-                            <span className="text-zinc-400 text-sm font-semibold uppercase tracking-wider">Experience</span>
+                            <span className="text-gray-500 text-sm font-semibold uppercase tracking-wider">Experience</span>
                             <span className="text-emerald-400 font-bold text-xl">{xp} <span className="text-sm text-emerald-400/70">XP</span></span>
                         </div>
-                        <div className="w-full h-2 bg-zinc-800 rounded-full overflow-hidden mb-2">
+                        <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden mb-2">
                             <motion.div
                                 initial={{ width: 0 }}
                                 animate={{ width: `${progressPercent}%` }}
                                 className="h-full bg-emerald-500 rounded-full"
                             />
                         </div>
-                        <div className="text-right text-xs text-zinc-500 font-medium">
+                        <div className="text-right text-xs text-gray-400 font-medium">
                             {progressXP} / 500 to Level {level + 1}
                         </div>
                     </div>
@@ -85,7 +85,7 @@ export const GamifiedDashboard: React.FC<GamifiedDashboardProps> = ({ onSelectMi
             </motion.div>
 
             {/* Missions Grid */}
-            <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
                 <Target className="text-emerald-500 w-6 h-6" /> Assigned Missions
             </h2>
 
@@ -111,8 +111,8 @@ export const GamifiedDashboard: React.FC<GamifiedDashboardProps> = ({ onSelectMi
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.1 }}
                             className={`text-left p-6 rounded-2xl border transition-all duration-300 relative overflow-hidden group ${isUnlocked
-                                ? 'bg-zinc-900 border-zinc-800 hover:border-emerald-500/50 hover:shadow-[0_0_30px_rgba(14,165,233,0.15)] cursor-pointer'
-                                : 'bg-zinc-900/50 border-zinc-800/50 opacity-60 cursor-not-allowed grayscale-[0.5]'
+                                ? 'bg-gray-100 border-gray-200 hover:border-emerald-500/50 hover:shadow-[0_0_30px_rgba(14,165,233,0.15)] cursor-pointer'
+                                : 'bg-gray-100/70 border-gray-200/50 opacity-60 cursor-not-allowed grayscale-[0.5]'
                                 }`}
                         >
                             {/* Hover Glow */}
@@ -121,32 +121,32 @@ export const GamifiedDashboard: React.FC<GamifiedDashboardProps> = ({ onSelectMi
                             <div className="flex justify-between items-start mb-4 relative z-10">
                                 <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-lg ${isCompleted ? 'bg-green-500/20 text-green-400 border border-green-500/30' :
                                     isUnlocked ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' :
-                                        'bg-zinc-800 text-zinc-500 border border-zinc-700'
+                                        'bg-gray-200 text-gray-400 border border-gray-200'
                                     }`}>
                                     {isCompleted ? <CheckCircle className="w-6 h-6" /> :
                                         isUnlocked ? <PlayCircle className="w-6 h-6 ml-0.5" /> :
                                             <Lock className="w-6 h-6" />}
                                 </div>
-                                <div className="text-xs font-bold tracking-widest uppercase text-zinc-500">
+                                <div className="text-xs font-bold tracking-widest uppercase text-gray-400">
                                     Mission {index + 1}
                                 </div>
                             </div>
 
                             <div className="relative z-10">
-                                <h3 className={`text-xl font-bold mb-2 ${isUnlocked ? 'text-white' : 'text-zinc-400'}`}>
+                                <h3 className={`text-xl font-bold mb-2 ${isUnlocked ? 'text-gray-900' : 'text-gray-500'}`}>
                                     {chapter.title}
                                 </h3>
-                                <p className={`text-sm line-clamp-2 ${isUnlocked ? 'text-zinc-400' : 'text-zinc-500'}`}>
+                                <p className={`text-sm line-clamp-2 ${isUnlocked ? 'text-gray-500' : 'text-gray-400'}`}>
                                     {chapter.subtitle}
                                 </p>
                             </div>
 
                             <div className="mt-6 flex items-center gap-4 text-xs font-semibold relative z-10">
-                                <div className={`flex items-center gap-1.5 ${isUnlocked ? 'text-zinc-300' : 'text-zinc-500'}`}>
+                                <div className={`flex items-center gap-1.5 ${isUnlocked ? 'text-gray-700' : 'text-gray-400'}`}>
                                     <Zap className="w-3.5 h-3.5" />
                                     <span>{chapter.quiz?.length || 0} Questions</span>
                                 </div>
-                                <div className={`flex items-center gap-1.5 ${isUnlocked ? 'text-emerald-400' : 'text-zinc-500'}`}>
+                                <div className={`flex items-center gap-1.5 ${isUnlocked ? 'text-emerald-400' : 'text-gray-400'}`}>
                                     <Trophy className="w-3.5 h-3.5" />
                                     <span>+100 XP</span>
                                 </div>
@@ -163,7 +163,7 @@ export const GamifiedDashboard: React.FC<GamifiedDashboardProps> = ({ onSelectMi
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: fullPlaybookData.length * 0.1 }}
-                    className={`md:col-span-2 text-left p-6 sm:p-8 rounded-2xl border transition-all duration-300 relative overflow-hidden group bg-zinc-950 border-red-500/50 shadow-[0_0_30px_rgba(239,68,68,0.15)] hover:shadow-[0_0_50px_rgba(239,68,68,0.3)] cursor-pointer`}
+                    className={`md:col-span-2 text-left p-6 sm:p-8 rounded-2xl border transition-all duration-300 relative overflow-hidden group bg-gray-50 border-red-500/50 shadow-[0_0_30px_rgba(239,68,68,0.15)] hover:shadow-[0_0_50px_rgba(239,68,68,0.3)] cursor-pointer`}
                 >
                     {/* Hover Glow */}
                     <div className="absolute inset-0 bg-gradient-to-br from-red-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -180,16 +180,16 @@ export const GamifiedDashboard: React.FC<GamifiedDashboardProps> = ({ onSelectMi
                     </div>
 
                     <div className="relative z-10">
-                        <h3 className="text-2xl font-bold mb-2 text-white drop-shadow-[0_0_10px_rgba(239,68,68,0.5)]">
+                        <h3 className="text-2xl font-bold mb-2 text-gray-900 drop-shadow-[0_0_10px_rgba(239,68,68,0.5)]">
                             The Architect
                         </h3>
-                        <p className="text-sm md:text-base line-clamp-2 text-zinc-300">
+                        <p className="text-sm md:text-base line-clamp-2 text-gray-700">
                             Face the ultimate test. Prove your architectural mastery in a live simulation against the platform's core AI.
                         </p>
                     </div>
 
                     <div className="mt-6 flex items-center gap-6 text-sm font-bold relative z-10">
-                        <div className="flex items-center gap-2 text-zinc-200">
+                        <div className="flex items-center gap-2 text-gray-800">
                             <Zap className="w-4 h-4" />
                             <span>6 Opponents</span>
                         </div>

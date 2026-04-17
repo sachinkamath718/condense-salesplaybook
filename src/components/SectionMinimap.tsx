@@ -19,7 +19,7 @@ export const SectionMinimap: React.FC<MinimapProps> = ({ chapters, activeChapter
                             <span
                                 className={`absolute right-full mr-4 text-xs font-semibold whitespace-nowrap transition-all duration-300 ${isActive
                                     ? 'opacity-100 tranzinc-x-0 tracking-widest text-[#a855f7]'
-                                    : 'opacity-0 tranzinc-x-2 text-white/40 group-hover:opacity-100 group-hover:tranzinc-x-0'
+                                    : 'opacity-0 tranzinc-x-2 text-gray-900/40 group-hover:opacity-100 group-hover:tranzinc-x-0'
                                     }`}
                             // using hex #a855f7 or tailwind accent if inline
                             >

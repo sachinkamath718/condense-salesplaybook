@@ -50,7 +50,7 @@ export const WelcomeWalkthrough: React.FC<WelcomeProps> = ({ userName, onComplet
             <div className="absolute top-1/3 left-1/4 w-[500px] h-[500px] bg-primary/10 blur-[150px] rounded-full pointer-events-none mix-blend-screen" />
             <div className="absolute bottom-1/3 right-1/4 w-[500px] h-[500px] bg-accent/10 blur-[150px] rounded-full pointer-events-none mix-blend-screen" />
 
-            <div className="relative z-10 w-full max-w-3xl flex flex-col items-stretch bg-black/40 border border-white/10 rounded-[2.5rem] shadow-2xl overflow-hidden">
+            <div className="relative z-10 w-full max-w-3xl flex flex-col items-stretch bg-black/40 border border-gray-200 rounded-[2.5rem] shadow-2xl overflow-hidden">
 
                 {/* Content Side */}
                 <div className="w-full p-10 md:p-14 flex flex-col justify-center relative bg-gradient-to-br from-white/5 to-transparent">
@@ -73,17 +73,17 @@ export const WelcomeWalkthrough: React.FC<WelcomeProps> = ({ userName, onComplet
                             transition={{ duration: 0.5 }}
                             className="flex flex-col h-full"
                         >
-                            <div className="mb-6 inline-flex p-4 rounded-3xl bg-white/5 backdrop-blur-md border border-white/10">
+                            <div className="mb-6 inline-flex p-4 rounded-3xl bg-white/5 backdrop-blur-md border border-gray-200">
                                 {slide.icon}
                             </div>
                             <h3 className="text-primary font-bold tracking-widest uppercase text-sm mb-2">
                                 {slide.title}
                             </h3>
-                            <h2 className="text-4xl font-extrabold text-white mb-6 leading-tight drop-shadow-md">
+                            <h2 className="text-4xl font-extrabold text-gray-900 mb-6 leading-tight drop-shadow-md">
                                 {currentStep === 0 ? `Hello, ${userName.split(' ')[0]}. ` : ''}
                                 {slide.subtitle}
                             </h2>
-                            <p className="text-lg text-white/70 leading-relaxed max-w-md">
+                            <p className="text-lg text-gray-900/70 leading-relaxed max-w-md">
                                 {slide.content}
                             </p>
                         </motion.div>
@@ -94,7 +94,7 @@ export const WelcomeWalkthrough: React.FC<WelcomeProps> = ({ userName, onComplet
                             onClick={handleNext}
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
-                            className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-primary text-white font-bold tracking-wide shadow-lg hover:bg-primary/90 transition-all ml-auto"
+                            className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-primary text-gray-900 font-bold tracking-wide shadow-lg hover:bg-primary/90 transition-all ml-auto"
                         >
                             {currentStep === slides.length - 1 ? "Let's Go!" : 'Next'}
                             <ArrowRight className="w-5 h-5" />

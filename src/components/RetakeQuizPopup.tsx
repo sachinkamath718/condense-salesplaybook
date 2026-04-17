@@ -22,16 +22,16 @@ export const RetakeQuizPopup: React.FC<RetakeQuizPopupProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-white/80 backdrop-blur-md"
         >
             <motion.div
                 initial={{ scale: 0.9, y: 20 }}
                 animate={{ scale: 1, y: 0 }}
-                className="bg-zinc-950 border border-emerald-500/20 rounded-[2rem] p-8 max-w-md w-full relative overflow-hidden shadow-2xl"
+                className="bg-gray-50 border border-emerald-500/20 rounded-[2rem] p-8 max-w-md w-full relative overflow-hidden shadow-2xl"
             >
                 <button 
                     onClick={onClose}
-                    className="absolute top-6 right-6 p-2 text-zinc-500 hover:text-white transition-colors"
+                    className="absolute top-6 right-6 p-2 text-gray-400 hover:text-gray-900 transition-colors"
                 >
                     <X className="w-5 h-5" />
                 </button>
@@ -41,7 +41,7 @@ export const RetakeQuizPopup: React.FC<RetakeQuizPopupProps> = ({
                         <RotateCcw className="w-8 h-8 text-emerald-400" />
                     </div>
 
-                    <h2 className="text-2xl font-bold text-white mb-2 tracking-tight">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-2 tracking-tight">
                         REPLAY MISSION
                     </h2>
                     <p className="text-emerald-400 font-bold text-sm uppercase tracking-widest mb-6">
@@ -49,11 +49,11 @@ export const RetakeQuizPopup: React.FC<RetakeQuizPopupProps> = ({
                     </p>
                     
                     {totalQuestions > 0 && (
-                        <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-6 mb-8">
-                            <span className="text-zinc-500 text-xs font-bold uppercase tracking-widest block mb-1">Your Best Performance</span>
+                        <div className="bg-gray-100/70 border border-gray-200 rounded-2xl p-6 mb-8">
+                            <span className="text-gray-400 text-xs font-bold uppercase tracking-widest block mb-1">Your Best Performance</span>
                             <div className="flex items-center justify-center gap-3">
                                 <Award className="w-5 h-5 text-emerald-500" />
-                                <span className="text-3xl font-black text-white">{previousScore} / {totalQuestions}</span>
+                                <span className="text-3xl font-black text-gray-900">{previousScore} / {totalQuestions}</span>
                             </div>
                         </div>
                     )}
@@ -61,7 +61,7 @@ export const RetakeQuizPopup: React.FC<RetakeQuizPopupProps> = ({
                     <div className={totalQuestions > 0 ? "grid grid-cols-2 gap-4" : "flex flex-col gap-4"}>
                         <button
                             onClick={onStart}
-                            className="py-4 px-6 bg-emerald-500 text-white font-bold rounded-xl hover:bg-emerald-400 transition-all flex items-center justify-center gap-2 group w-full"
+                            className="py-4 px-6 bg-emerald-500 text-gray-900 font-bold rounded-xl hover:bg-emerald-400 transition-all flex items-center justify-center gap-2 group w-full"
                         >
                             {totalQuestions > 0 ? "Start Quiz" : "Replay Mission"}
                             {totalQuestions > 0 ? (
@@ -72,7 +72,7 @@ export const RetakeQuizPopup: React.FC<RetakeQuizPopupProps> = ({
                         </button>
                         <button
                             onClick={onClose}
-                            className="py-4 px-6 bg-zinc-900 text-zinc-300 font-bold rounded-xl hover:bg-zinc-800 transition-all border border-zinc-800 w-full"
+                            className="py-4 px-6 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition-all border border-gray-200 w-full"
                         >
                             Cancel
                         </button>

@@ -492,11 +492,11 @@ Rules:
                     >
                         <ShieldAlert className="w-8 h-8 text-red-500 animate-pulse" />
                     </motion.div>
-                    <h1 className="text-4xl sm:text-6xl font-black text-white mb-6 tracking-tight">
+                    <h1 className="text-4xl sm:text-6xl font-black text-gray-900 mb-6 tracking-tight">
                         CHOOSE YOUR <span className="text-red-500">OPPONENT</span>
                     </h1>
-                    <p className="text-zinc-400 text-lg max-w-2xl mx-auto leading-relaxed">
-                        Each persona has different priorities and expects you to address their specific concerns. You need to hit <strong className="text-white">4 key points</strong> to convince them.
+                    <p className="text-gray-500 text-lg max-w-2xl mx-auto leading-relaxed">
+                        Each persona has different priorities and expects you to address their specific concerns. You need to hit <strong className="text-gray-900">4 key points</strong> to convince them.
                     </p>
                 </div>
 
@@ -510,7 +510,7 @@ Rules:
                             whileHover={{ scale: 1.02, y: -5 }}
                             whileTap={{ scale: 0.98 }}
                             onClick={() => startBattle(persona)}
-                            className={`group text-left p-8 rounded-[2rem] border transition-all duration-300 relative overflow-hidden bg-zinc-900/50 border-zinc-800 hover:border-${persona.color}-500/50`}
+                            className={`group text-left p-8 rounded-[2rem] border transition-all duration-300 relative overflow-hidden bg-gray-100/70 border-gray-200 hover:border-${persona.color}-500/50`}
                         >
                             <div className={`absolute inset-0 bg-gradient-to-br from-${persona.color}-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity`} />
 
@@ -526,11 +526,11 @@ Rules:
                             </div>
 
                             <div className="relative z-10">
-                                <h3 className="text-2xl font-bold text-white mb-1 group-hover:text-red-500 transition-colors">{persona.name}</h3>
-                                <p className="text-zinc-500 font-bold uppercase tracking-widest text-xs mb-4">{persona.title}</p>
+                                <h3 className="text-2xl font-bold text-gray-900 mb-1 group-hover:text-red-500 transition-colors">{persona.name}</h3>
+                                <p className="text-gray-400 font-bold uppercase tracking-widest text-xs mb-4">{persona.title}</p>
                                 <div className="flex flex-wrap gap-2">
                                     {persona.traits.map(trait => (
-                                        <span key={trait} className="px-3 py-1 bg-zinc-800/80 border border-zinc-700/50 rounded-full text-[10px] font-black text-zinc-400 uppercase tracking-tighter">
+                                        <span key={trait} className="px-3 py-1 bg-gray-200/80 border border-gray-200 rounded-full text-[10px] font-black text-gray-500 uppercase tracking-tighter">
                                             {trait}
                                         </span>
                                     ))}
@@ -543,7 +543,7 @@ Rules:
                 <div className="mt-12 text-center">
                     <button
                         onClick={onBack}
-                        className="px-8 py-4 bg-zinc-900 text-zinc-400 font-bold rounded-xl hover:bg-zinc-800 border border-zinc-800 transition-all flex items-center gap-2 mx-auto"
+                        className="px-8 py-4 bg-gray-100 text-gray-500 font-bold rounded-xl hover:bg-gray-200 border border-gray-200 transition-all flex items-center gap-2 mx-auto"
                     >
                         <ArrowLeft className="w-5 h-5" />
                         Back to Dashboard
@@ -560,7 +560,7 @@ Rules:
                 <motion.div
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    className="bg-zinc-950 border-2 border-emerald-500/50 p-12 sm:p-20 rounded-[3rem] shadow-[0_0_100px_rgba(16,185,129,0.2)] relative overflow-hidden"
+                    className="bg-gray-50 border-2 border-emerald-500/50 p-12 sm:p-20 rounded-[3rem] shadow-[0_0_100px_rgba(16,185,129,0.2)] relative overflow-hidden"
                 >
                     <div className="absolute inset-0 bg-emerald-500/5 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-emerald-900/40 via-transparent to-transparent pointer-events-none" />
                     <motion.div
@@ -571,16 +571,16 @@ Rules:
                     >
                         <Trophy className="w-16 h-16" />
                     </motion.div>
-                    <h2 className="text-4xl sm:text-6xl font-black text-white mb-6 tracking-tight drop-shadow-[0_0_20px_rgba(16,185,129,0.5)]">
+                    <h2 className="text-4xl sm:text-6xl font-black text-gray-900 mb-6 tracking-tight drop-shadow-[0_0_20px_rgba(16,185,129,0.5)]">
                         DEAL CLOSED
                     </h2>
-                    <p className="text-zinc-300 text-xl font-medium mb-12 max-w-2xl mx-auto leading-relaxed">
+                    <p className="text-gray-700 text-xl font-medium mb-12 max-w-2xl mx-auto leading-relaxed">
                         Incredible pitch. You successfully addressed the core concerns of <strong>{selectedPersona?.name}</strong> and earned their trust.
                         You have earned <strong className="text-emerald-400 text-3xl mx-2">+2000 XP</strong>.
                     </p>
                     <button
                         onClick={() => { completeMission('boss-battle'); onComplete(); }}
-                        className="px-12 py-6 bg-emerald-500 text-white font-bold rounded-2xl hover:bg-emerald-400 transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(16,185,129,0.5)] text-xl w-full sm:w-auto uppercase tracking-wider"
+                        className="px-12 py-6 bg-emerald-500 text-gray-900 font-bold rounded-2xl hover:bg-emerald-400 transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(16,185,129,0.5)] text-xl w-full sm:w-auto uppercase tracking-wider"
                     >
                         Return to Dashboard
                     </button>
@@ -601,7 +601,7 @@ Rules:
     return (
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-32">
             {/* Header */}
-            <div className="mb-8 bg-zinc-950 border border-red-500/30 p-6 rounded-3xl flex flex-col sm:flex-row items-center justify-between shadow-[0_0_50px_rgba(239,68,68,0.1)] relative overflow-hidden">
+            <div className="mb-8 bg-gray-50 border border-red-500/30 p-6 rounded-3xl flex flex-col sm:flex-row items-center justify-between shadow-[0_0_50px_rgba(239,68,68,0.1)] relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 via-transparent to-red-500/10 opacity-50" />
 
                 <div className="flex items-center gap-6 relative z-10 w-full sm:w-auto mb-6 sm:mb-0">
@@ -609,7 +609,7 @@ Rules:
                         <Cpu className="w-8 h-8 animate-pulse" />
                     </div>
                     <div>
-                        <h2 className="text-2xl font-black text-white tracking-tight">{selectedPersona?.name}</h2>
+                        <h2 className="text-2xl font-black text-gray-900 tracking-tight">{selectedPersona?.name}</h2>
                         <p className="text-red-400 font-bold uppercase tracking-widest text-sm">{selectedPersona?.title}</p>
                     </div>
                 </div>
@@ -623,7 +623,7 @@ Rules:
                     )}
                     <button
                         onClick={onBack}
-                        className="px-4 py-2 bg-zinc-900/50 hover:bg-zinc-800 border border-red-500/30 text-red-500 text-xs font-bold uppercase tracking-widest rounded-xl transition-all flex items-center gap-2"
+                        className="px-4 py-2 bg-gray-100/70 hover:bg-gray-200 border border-red-500/30 text-red-500 text-xs font-bold uppercase tracking-widest rounded-xl transition-all flex items-center gap-2"
                     >
                         <ArrowLeft className="w-4 h-4" />
                         Back
@@ -634,17 +634,17 @@ Rules:
                         </div>
                         {/* Score progress */}
                         <div className="flex items-center gap-2">
-                            <span className="text-zinc-500 text-xs font-bold">{score}/{SCORE_TO_WIN} pts</span>
+                            <span className="text-gray-400 text-xs font-bold">{score}/{SCORE_TO_WIN} pts</span>
                             <div className="flex gap-1.5">
                                 {[...Array(SCORE_TO_WIN)].map((_, i) => (
-                                    <div key={i} className={`w-5 h-2 rounded-sm transition-all ${i < score ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]' : 'bg-zinc-800'}`} />
+                                    <div key={i} className={`w-5 h-2 rounded-sm transition-all ${i < score ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]' : 'bg-gray-200'}`} />
                                 ))}
                             </div>
                         </div>
                         {/* Patience bar */}
                         <div className="flex gap-1.5">
                             {[...Array(selectedPersona?.patience || 6)].map((_, i) => (
-                                <div key={i} className={`w-5 h-2 rounded-sm ${i < turnsLeft ? 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.8)]' : 'bg-zinc-800'}`} />
+                                <div key={i} className={`w-5 h-2 rounded-sm ${i < turnsLeft ? 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.8)]' : 'bg-gray-200'}`} />
                             ))}
                         </div>
                     </div>
@@ -655,10 +655,10 @@ Rules:
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-zinc-900 border border-zinc-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col h-[600px]"
+                className="bg-gray-100 border border-gray-200 rounded-3xl shadow-2xl overflow-hidden flex flex-col h-[600px]"
             >
                 {/* Messages */}
-                <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-zinc-950/50">
+                <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-gray-50/50">
                     {messages.map((message) => (
                         <div key={message.id} className={`flex ${message.role === 'user' ? 'justify-end' : message.role === 'system' ? 'justify-center' : 'justify-start'}`}>
                             <motion.div
@@ -667,10 +667,10 @@ Rules:
                                 transition={{ duration: 0.3 }}
                                 className={`max-w-[85%] sm:max-w-[75%] rounded-2xl p-4 sm:p-5
                                     ${message.role === 'user'
-                                        ? 'bg-emerald-600 text-white rounded-br-none shadow-[0_5px_15px_rgba(16,185,129,0.2)]'
+                                        ? 'bg-emerald-600 text-gray-900 rounded-br-none shadow-[0_5px_15px_rgba(16,185,129,0.2)]'
                                         : message.role === 'system'
                                             ? 'bg-amber-950/60 border border-amber-700/50 text-amber-300 text-sm font-medium tracking-wide text-center rounded-xl'
-                                            : 'bg-zinc-800 text-zinc-200 border border-zinc-700 rounded-bl-none shadow-lg'
+                                            : 'bg-gray-200 text-gray-800 border border-gray-200 rounded-bl-none shadow-lg'
                                     }`}
                             >
                                 {(message.role === 'user' || message.role === 'model') && (
@@ -688,7 +688,7 @@ Rules:
 
                     {isTyping && (
                         <div className="flex justify-start">
-                            <div className="bg-zinc-800 border border-zinc-700 rounded-2xl rounded-bl-none p-5 flex items-center gap-3 text-zinc-400">
+                            <div className="bg-gray-200 border border-gray-200 rounded-2xl rounded-bl-none p-5 flex items-center gap-3 text-gray-500">
                                 <Loader2 className="w-5 h-5 animate-spin text-emerald-500" />
                                 <span className="text-sm font-medium">{selectedPersona?.name} is thinking...</span>
                             </div>
@@ -698,7 +698,7 @@ Rules:
                 </div>
 
                 {/* Input Area / Retry Options */}
-                <div className="p-4 sm:p-6 bg-zinc-900 border-t border-zinc-800">
+                <div className="p-4 sm:p-6 bg-gray-100 border-t border-gray-200">
                     {battleStatus === 'playing' ? (
                         <>
                             <form onSubmit={handleSendMessage} className="relative flex items-center">
@@ -708,17 +708,17 @@ Rules:
                                     onChange={(e) => setInputValue(e.target.value)}
                                     disabled={isTyping}
                                     placeholder="Address their concern with a clear, specific answer..."
-                                    className="w-full bg-zinc-950 border border-zinc-700 text-white rounded-2xl pl-6 pr-16 py-4 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-lg"
+                                    className="w-full bg-gray-50 border border-gray-200 text-gray-900 rounded-2xl pl-6 pr-16 py-4 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-lg"
                                 />
                                 <button
                                     type="submit"
                                     disabled={!inputValue.trim() || isTyping}
-                                    className="absolute right-3 bg-emerald-500 text-white p-2.5 rounded-xl hover:bg-emerald-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="absolute right-3 bg-emerald-500 text-gray-900 p-2.5 rounded-xl hover:bg-emerald-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     <Send className="w-5 h-5" />
                                 </button>
                             </form>
-                            <div className="mt-3 flex justify-between items-center text-xs text-zinc-500 px-2 font-medium">
+                            <div className="mt-3 flex justify-between items-center text-xs text-gray-400 px-2 font-medium">
                                 <span>Powered by Gemini AI · Scoring: {score}/{SCORE_TO_WIN} points</span>
                                 <span>{turnsLeft} attempts remaining</span>
                             </div>
@@ -728,13 +728,13 @@ Rules:
                             <p className="text-red-400 font-bold mb-2 sm:mb-0 sm:mr-auto">Mission Failed. Review the chat above to see where you went wrong.</p>
                             <button
                                 onClick={() => setGamePhase('selecting')}
-                                className="px-6 py-3 bg-zinc-950 text-zinc-400 font-bold rounded-xl hover:bg-zinc-800 border border-zinc-800 transition-all text-sm uppercase tracking-wider"
+                                className="px-6 py-3 bg-gray-50 text-gray-500 font-bold rounded-xl hover:bg-gray-200 border border-gray-200 transition-all text-sm uppercase tracking-wider"
                             >
                                 Change Opponent
                             </button>
                             <button
                                 onClick={() => { if (selectedPersona) startBattle(selectedPersona); }}
-                                className="px-6 py-3 bg-red-600/80 text-white font-bold rounded-xl hover:bg-red-500 transition-all hover:scale-105 hover:shadow-[0_0_20px_rgba(239,68,68,0.5)] text-sm uppercase tracking-wider flex items-center gap-2"
+                                className="px-6 py-3 bg-red-600/80 text-gray-900 font-bold rounded-xl hover:bg-red-500 transition-all hover:scale-105 hover:shadow-[0_0_20px_rgba(239,68,68,0.5)] text-sm uppercase tracking-wider flex items-center gap-2"
                             >
                                 <ArrowLeft className="w-4 h-4" /> Try Again
                             </button>

@@ -28,20 +28,20 @@ const AdminPasswordModal = ({ onConfirm, onCancel }: { onConfirm: (pass: string)
       initial={{ opacity: 0 }} 
       animate={{ opacity: 1 }} 
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-white/80 backdrop-blur-md"
     >
       <motion.div 
         initial={{ scale: 0.9, y: 20 }}
         animate={{ scale: 1, y: 0 }}
-        className="bg-[#0f172a] border border-slate-700 p-8 rounded-[2rem] shadow-2xl w-full max-w-md"
+        className="bg-white border border-gray-200 p-8 rounded-[2rem] shadow-2xl w-full max-w-md"
       >
         <div className="flex items-center gap-3 mb-6">
           <div className="p-3 bg-emerald-500/10 rounded-xl">
             <Target className="w-6 h-6 text-emerald-400" />
           </div>
           <div>
-            <h3 className="text-xl font-bold text-white">Admin Access</h3>
-            <p className="text-slate-400 text-xs">Enter your security passcode</p>
+            <h3 className="text-xl font-bold text-gray-900">Admin Access</h3>
+            <p className="text-gray-500 text-xs">Enter your security passcode</p>
           </div>
         </div>
 
@@ -55,25 +55,25 @@ const AdminPasswordModal = ({ onConfirm, onCancel }: { onConfirm: (pass: string)
             if (e.key === 'Escape') onCancel();
           }}
           placeholder="Passcode"
-          className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50 mb-6"
+          className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/50 mb-6"
         />
 
         <div className="flex gap-3">
           <button
             onClick={onCancel}
-            className="flex-1 px-4 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold transition-all"
+            className="flex-1 px-4 py-3 rounded-xl bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold transition-all"
           >
             Cancel
           </button>
           <button
             onClick={() => onConfirm(password)}
-            className="flex-1 px-4 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold transition-all shadow-lg shadow-emerald-900/20"
+            className="flex-1 px-4 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-gray-900 font-bold transition-all shadow-lg shadow-emerald-900/20"
           >
             Authenticate
           </button>
         </div>
         
-        <p className="text-center text-[10px] text-slate-500 mt-6 uppercase tracking-widest font-bold">
+        <p className="text-center text-[10px] text-gray-400 mt-6 uppercase tracking-widest font-bold">
           Default: admin123
         </p>
       </motion.div>
@@ -189,10 +189,10 @@ function AppContent({ user, setUser }: { user: UserInfo | null, setUser: (u: Use
   }
 
   return (
-    <div className="min-h-screen bg-[#020617] text-zinc-100 overflow-x-hidden relative selection:bg-emerald-500/30 selection:text-white">
+    <div className="min-h-screen bg-gray-50 text-gray-900 overflow-x-hidden relative selection:bg-emerald-500/30 selection:text-gray-900">
       {/* Background radial glow */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-0 left-1/4 w-[800px] h-[800px] rounded-full blur-[200px] mix-blend-screen opacity-10 bg-emerald-900" />
+        <div className="absolute top-0 left-1/4 w-[800px] h-[800px] rounded-full blur-[200px] mix-blend-screen opacity-10 bg-blue-200" />
       </div>
 
       <Navigation
