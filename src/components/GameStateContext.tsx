@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '../lib/firebase';
+import { supabase } from '../lib/supabase';
 
 interface GameState {
     xp: number;
@@ -16,7 +15,7 @@ interface GameState {
     saveChatTranscript: (personaId: string, messages: { role: string, content: string }[], status: 'won' | 'lost') => void;
     recordAnswer: (isCorrect: boolean) => void;
     resetGame: () => void;
-    isFirebaseConfigured: boolean;
+    isFirebaseConfigured: boolean; // kept for compatibility, always true with Supabase
 }
 
 const GameContext = createContext<GameState | undefined>(undefined);
@@ -30,17 +29,6 @@ export const GameProvider: React.FC<{ children: React.ReactNode, userId?: string
     const [chatTranscripts, setChatTranscripts] = useState<Record<string, { timestamp: any, messages: { role: string, content: string }[], status: 'won' | 'lost' }>>({});
     const [isStateLoaded, setIsStateLoaded] = useState(false);
     const [loadedUserId, setLoadedUserId] = useState<string | undefined>(undefined);
-    const [isFirebaseConfigured, setIsFirebaseConfigured] = useState(false);
-
-    useEffect(() => {
-        // Check if real config is provided (not dummy)
-        const isConfigured = !!import.meta.env.VITE_FIREBASE_API_KEY && 
-                             import.meta.env.VITE_FIREBASE_API_KEY !== "AIzaSyDummyKeyForDevelopment12345";
-        setIsFirebaseConfigured(isConfigured);
-        if (!isConfigured) {
-            console.warn("Firebase is NOT configured with real keys. Data will not persist to the cloud.");
-        }
-    }, []);
 
     const resetGame = () => {
         setXp(0);
@@ -51,6 +39,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode, userId?: string
         setChatTranscripts({});
     };
 
+    // Load state from localStorage + Supabase
     useEffect(() => {
         const fetchState = async () => {
             setIsStateLoaded(false);
@@ -62,7 +51,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode, userId?: string
 
             let hasOptimisticLoad = false;
 
-            // 1. Optimistic Local Load
+            // 1. Optimistic local load
             try {
                 const savedStateStr = localStorage.getItem(`condense_state_${userId}`);
                 if (savedStateStr) {
@@ -74,41 +63,38 @@ export const GameProvider: React.FC<{ children: React.ReactNode, userId?: string
                         setTotalQuestions(state.totalQuestions || 0);
                         setMissionScores(state.missionScores || {});
                         setChatTranscripts(state.chatTranscripts || {});
-                        
                         hasOptimisticLoad = true;
                         setLoadedUserId(userId);
-                        setIsStateLoaded(true); // Release lock immediately for instant UI
+                        setIsStateLoaded(true);
                     }
                 }
             } catch (e) {
-                console.error("Optimistic load failed:", e);
+                console.error('Optimistic load failed:', e);
             }
 
-            // 2. Background Cloud Sync (Merge)
+            // 2. Background Supabase sync
             try {
-                const userRef = doc(db, 'users', userId);
-                const userSnap = await getDoc(userRef);
+                const { data, error } = await supabase
+                    .from('users')
+                    .select('xp, completed_missions, correct_answers, total_questions, quiz_results, chat_transcripts')
+                    .eq('username', userId)
+                    .single();
 
-                if (userSnap.exists()) {
-                    const data = userSnap.data();
-                    
+                if (data && !error) {
                     setXp(prev => Math.max(prev, data.xp || 0));
-                    
                     setCompletedMissions(prev => {
-                        const merged = new Set([...prev, ...(data.completedMissions || [])]);
+                        const merged = new Set([...prev, ...(data.completed_missions || [])]);
                         return Array.from(merged);
                     });
-                    
-                    setCorrectAnswers(prev => Math.max(prev, data.correctAnswers || 0));
-                    setTotalQuestions(prev => Math.max(prev, data.totalQuestions || 0));
-                    
-                    setMissionScores(prev => ({ ...(data.quizResults || {}), ...prev }));
-                    setChatTranscripts(prev => ({ ...(data.chatTranscripts || {}), ...prev }));
+                    setCorrectAnswers(prev => Math.max(prev, data.correct_answers || 0));
+                    setTotalQuestions(prev => Math.max(prev, data.total_questions || 0));
+                    setMissionScores(prev => ({ ...(data.quiz_results || {}), ...prev }));
+                    setChatTranscripts(prev => ({ ...(data.chat_transcripts || {}), ...prev }));
                 } else if (!hasOptimisticLoad) {
                     resetGame();
                 }
             } catch (err) {
-                console.warn("Silent cloud fetch failed:", err);
+                console.warn('Silent cloud fetch failed:', err);
                 if (!hasOptimisticLoad) resetGame();
             } finally {
                 if (!hasOptimisticLoad) {
@@ -121,16 +107,12 @@ export const GameProvider: React.FC<{ children: React.ReactNode, userId?: string
         fetchState();
     }, [userId]);
 
+    // Save state to localStorage + sync to Supabase
     useEffect(() => {
         if (!userId || !isStateLoaded || loadedUserId !== userId) return;
 
-        // DATA MIGRATION: Deflate legacy inflated XP (from the multiplier bug)
-        // Max possible now: 11 missions (1100) + Boss (2000) = 3100
-        const MAX_POSSIBLE_XP = 3100; 
-        if (xp > MAX_POSSIBLE_XP) {
-            console.log("Deflating legacy XP for user:", userId);
-            setXp(MAX_POSSIBLE_XP);
-        }
+        const MAX_POSSIBLE_XP = 3100;
+        if (xp > MAX_POSSIBLE_XP) setXp(MAX_POSSIBLE_XP);
 
         const stateToSave = {
             xp: Math.min(xp, MAX_POSSIBLE_XP),
@@ -142,35 +124,28 @@ export const GameProvider: React.FC<{ children: React.ReactNode, userId?: string
         };
         localStorage.setItem(`condense_state_${userId}`, JSON.stringify(stateToSave));
 
-        // Sync to Firebase for Admin Telemetrics
-        const syncToFirebase = async () => {
+        const syncToSupabase = async () => {
             try {
-                // Ensure the user doc exists/updates with the latest stats
-                const userRef = doc(db, 'users', userId);
-                await setDoc(userRef, {
-                    username: userId,
-                    xp: xp,
+                await supabase.from('users').update({
+                    xp: Math.min(xp, MAX_POSSIBLE_XP),
                     accuracy: totalQuestions > 0 ? (correctAnswers / totalQuestions) * 100 : 0,
-                    correctAnswers: correctAnswers,
-                    totalQuestions: totalQuestions,
-                    completedMissions: completedMissions,
-                    modulesCompleted: completedMissions.length,
-                    lastActive: serverTimestamp(),
-                    quizResults: missionScores,
-                    chatTranscripts: chatTranscripts,
-                }, { merge: true });
-                console.log("Cloud sync successful for user:", userId);
+                    correct_answers: correctAnswers,
+                    total_questions: totalQuestions,
+                    completed_missions: completedMissions,
+                    modules_completed: completedMissions.length,
+                    last_active: new Date().toISOString(),
+                    quiz_results: missionScores,
+                    chat_transcripts: chatTranscripts,
+                }).eq('username', userId);
             } catch (err) {
-                // Silently fail if Firebase isn't configured yet
-                console.warn("Firestore sync skipped (check Firebase config):", err);
+                console.warn('Supabase sync skipped:', err);
             }
         };
 
-        syncToFirebase();
+        syncToSupabase();
     }, [userId, isStateLoaded, xp, completedMissions, correctAnswers, totalQuestions, missionScores, chatTranscripts]);
 
-    const unlockedMissionsCount = completedMissions.length + 1; // Always unlock next one
-
+    const unlockedMissionsCount = completedMissions.length + 1;
     const addXP = (amount: number) => setXp(prev => prev + amount);
 
     const completeMission = (chapterId: string, score?: number, total?: number) => {
@@ -180,23 +155,13 @@ export const GameProvider: React.FC<{ children: React.ReactNode, userId?: string
                 [chapterId]: { score: Math.max(prev[chapterId]?.score || 0, score), total }
             }));
         }
-        
-        setCompletedMissions(prev => {
-            if (!prev.includes(chapterId)) {
-                return [...prev, chapterId];
-            }
-            return prev;
-        });
+        setCompletedMissions(prev => prev.includes(chapterId) ? prev : [...prev, chapterId]);
     };
-    
+
     const saveChatTranscript = (personaId: string, messages: { role: string, content: string }[], status: 'won' | 'lost') => {
         setChatTranscripts(prev => ({
             ...prev,
-            [personaId]: {
-                timestamp: new Date().toISOString(),
-                messages,
-                status
-            }
+            [personaId]: { timestamp: new Date().toISOString(), messages, status }
         }));
     };
 
@@ -207,19 +172,10 @@ export const GameProvider: React.FC<{ children: React.ReactNode, userId?: string
 
     return (
         <GameContext.Provider value={{
-            xp,
-            completedMissions,
-            correctAnswers,
-            totalQuestions,
-            unlockedMissionsCount,
-            missionScores,
-            chatTranscripts,
-            addXP,
-            completeMission,
-            saveChatTranscript,
-            recordAnswer,
-            resetGame,
-            isFirebaseConfigured
+            xp, completedMissions, correctAnswers, totalQuestions,
+            unlockedMissionsCount, missionScores, chatTranscripts,
+            addXP, completeMission, saveChatTranscript, recordAnswer, resetGame,
+            isFirebaseConfigured: true // always true — Supabase is always configured
         }}>
             {children}
         </GameContext.Provider>
@@ -229,8 +185,6 @@ export const GameProvider: React.FC<{ children: React.ReactNode, userId?: string
 // eslint-disable-next-line react-refresh/only-export-components
 export const useGameState = () => {
     const context = useContext(GameContext);
-    if (!context) {
-        throw new Error('useGameState must be used within a GameProvider');
-    }
+    if (!context) throw new Error('useGameState must be used within a GameProvider');
     return context;
 };

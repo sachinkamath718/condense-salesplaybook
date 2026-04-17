@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, ShieldCheck, Cpu, Key, AlertCircle, RefreshCw } from 'lucide-react';
 import { Card } from './Card';
-import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '../lib/firebase';
+import { supabase } from '../lib/supabase';
 
 interface LoginProps {
     onStart: (name: string, company: string, isReturning: boolean) => void;
@@ -18,7 +17,6 @@ export const Login: React.FC<LoginProps> = ({ onStart }) => {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        // Clear error when switching modes
         setError('');
         setPasscode('');
     }, [isSignUp]);
@@ -33,67 +31,65 @@ export const Login: React.FC<LoginProps> = ({ onStart }) => {
         setLoading(true);
 
         try {
-            // Fake loading delay to look cool
             await new Promise(resolve => setTimeout(resolve, 800));
 
-            const userRef = doc(db, 'users', username);
-            const userSnap = await getDoc(userRef);
+            const { data: existingUser, error: fetchError } = await supabase
+                .from('users')
+                .select('*')
+                .eq('username', username)
+                .single();
 
             if (isSignUp) {
-                if (!company.trim()) {
-                    setLoading(false);
-                    return;
-                }
+                if (!company.trim()) { setLoading(false); return; }
 
-                if (userSnap.exists()) {
+                if (existingUser && !fetchError) {
                     setError('Identity already registered. Please authenticate.');
                     setLoading(false);
                     return;
                 }
 
-                // Create new user in Firestore
-                const userData = {
-                    username: username,
-                    companyCode: company.trim(),
-                    passcode: passcode.trim(), // In a real app, this should be hashed
-                    lastActive: serverTimestamp(),
+                const { error: insertError } = await supabase.from('users').insert({
+                    username,
+                    passcode: passcode.trim(),
+                    company_code: company.trim(),
                     xp: 0,
                     accuracy: 0,
-                    modulesCompleted: 0,
-                    quizResults: {}
-                };
+                    modules_completed: 0,
+                    quiz_results: {},
+                    completed_missions: [],
+                    last_active: new Date().toISOString(),
+                });
 
-                await setDoc(userRef, userData);
-                
+                if (insertError) throw insertError;
+
                 localStorage.setItem('condense_active_session', username);
                 localStorage.setItem('condense_active_company', company.trim());
                 onStart(username, company.trim(), false);
+
             } else {
-                // Log In
-                if (!userSnap.exists()) {
+                if (!existingUser || fetchError) {
                     setError('Identity not found. Please initialize access.');
                     setLoading(false);
                     return;
                 }
 
-                const userData = userSnap.data();
-                if (userData.passcode !== passcode.trim()) {
+                if (existingUser.passcode !== passcode.trim()) {
                     setError('Invalid Secure Passcode.');
                     setLoading(false);
                     return;
                 }
 
-                localStorage.setItem('condense_active_session', username);
-                localStorage.setItem('condense_active_company', userData.companyCode);
-                
-                // Update last active
-                await setDoc(userRef, { lastActive: serverTimestamp() }, { merge: true });
+                await supabase.from('users')
+                    .update({ last_active: new Date().toISOString() })
+                    .eq('username', username);
 
-                onStart(username, userData.companyCode, true);
+                localStorage.setItem('condense_active_session', username);
+                localStorage.setItem('condense_active_company', existingUser.company_code);
+                onStart(username, existingUser.company_code, true);
             }
         } catch (err) {
-            console.error("Login Error", err);
-            setError('System error connecting to secure vault.');
+            console.error('Login Error', err);
+            setError('Connection error. Please check your internet and try again.');
         } finally {
             setLoading(false);
         }
@@ -101,29 +97,24 @@ export const Login: React.FC<LoginProps> = ({ onStart }) => {
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6 relative overflow-hidden">
-            {/* The animated dynamic background */}
+            {/* Subtle light background blobs */}
             <div className="absolute inset-0 z-0 pointer-events-none">
-                <div className="absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] rounded-full bg-blue-200/20 blur-[150px] mix-blend-screen animate-pulse duration-[10000ms]" />
-                <div className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-indigo-200/20 blur-[120px] mix-blend-screen" />
-
-                {/* Micro-grid overlay for texture */}
-                <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSIvPjwvc3ZnPg==')] opacity-10" />
+                <div className="absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] rounded-full bg-blue-100/40 blur-[150px]" />
+                <div className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-indigo-100/40 blur-[120px]" />
             </div>
 
-            <div
-                className="z-10 w-full max-w-[480px] relative"
-            >
+            <div className="z-10 w-full max-w-[480px] relative">
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.7, ease: "easeOut" }}
+                    transition={{ duration: 0.7, ease: 'easeOut' }}
                     className="text-center mb-10"
                 >
-                    <div className="inline-flex items-center justify-center p-4 rounded-[2rem] bg-gradient-to-br from-blue-50 to-indigo-100 text-emerald-400 mb-8 border border-gray-200 shadow-[0_0_30px_rgba(52,211,153,0.15)] ">
+                    <div className="inline-flex items-center justify-center p-4 rounded-[2rem] bg-gradient-to-br from-blue-50 to-indigo-100 text-blue-600 mb-8 border border-blue-200 shadow-md">
                         <Cpu className="w-12 h-12" />
                     </div>
-                    <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-gray-900 mb-3 drop-shadow-2xl">
-                        Condense<span className="text-emerald-400">.</span>
+                    <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-gray-900 mb-3">
+                        Condense<span className="text-blue-600">.</span>
                     </h1>
                     <p className="text-gray-500 text-lg font-medium tracking-widest uppercase">
                         Enterprise Playbook
@@ -132,14 +123,11 @@ export const Login: React.FC<LoginProps> = ({ onStart }) => {
 
                 <Card
                     delay={0.2}
-                    className="p-8 md:p-10 bg-white/90 backdrop-blur-3xl border border-gray-200 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)] relative overflow-hidden rounded-[2.5rem]"
+                    className="p-8 md:p-10 bg-white border border-gray-200 shadow-xl relative overflow-hidden rounded-[2.5rem]"
                 >
-                    {/* Interior gradient shine */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent pointer-events-none" />
-
                     <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
                         {error && (
-                            <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 flex items-center gap-2 text-red-400 text-sm font-medium">
+                            <div className="p-3 rounded-xl bg-red-50 border border-red-200 flex items-center gap-2 text-red-600 text-sm font-medium">
                                 <AlertCircle className="w-4 h-4 shrink-0" />
                                 <p>{error}</p>
                             </div>
@@ -155,7 +143,7 @@ export const Login: React.FC<LoginProps> = ({ onStart }) => {
                                 required
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
-                                className="w-full px-5 py-4 rounded-2xl bg-gray-100/70 border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all font-medium text-lg shadow-inner"
+                                className="w-full px-5 py-4 rounded-2xl bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all font-medium text-lg"
                                 placeholder="E.g. John Doe"
                             />
                         </div>
@@ -168,7 +156,7 @@ export const Login: React.FC<LoginProps> = ({ onStart }) => {
                                     exit={{ opacity: 0, height: 0 }}
                                     className="space-y-2 overflow-hidden"
                                 >
-                                    <label htmlFor="company" className="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1 flex items-center gap-2 mt-2 group-focus-within:text-blue-600">
+                                    <label htmlFor="company" className="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1 flex items-center gap-2 mt-2">
                                         <ShieldCheck className="w-3.5 h-3.5" /> Division Code
                                     </label>
                                     <input
@@ -177,7 +165,7 @@ export const Login: React.FC<LoginProps> = ({ onStart }) => {
                                         required={isSignUp}
                                         value={company}
                                         onChange={(e) => setCompany(e.target.value)}
-                                        className="w-full px-5 py-4 rounded-2xl bg-gray-100/70 border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all font-medium text-lg shadow-inner"
+                                        className="w-full px-5 py-4 rounded-2xl bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all font-medium text-lg"
                                         placeholder="Enter access code..."
                                     />
                                 </motion.div>
@@ -194,7 +182,7 @@ export const Login: React.FC<LoginProps> = ({ onStart }) => {
                                 required
                                 value={passcode}
                                 onChange={(e) => setPasscode(e.target.value)}
-                                className="w-full px-5 py-4 rounded-2xl bg-gray-100/70 border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all font-medium text-lg tracking-widest shadow-inner"
+                                className="w-full px-5 py-4 rounded-2xl bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all font-medium text-lg tracking-widest"
                                 placeholder="••••••••"
                             />
                         </div>
@@ -204,9 +192,8 @@ export const Login: React.FC<LoginProps> = ({ onStart }) => {
                             whileTap={{ scale: 0.98 }}
                             type="submit"
                             disabled={loading || !name.trim() || !passcode.trim() || (isSignUp && !company.trim())}
-                            className="w-full relative group overflow-hidden flex items-center justify-center gap-3 py-4 px-6 rounded-2xl bg-emerald-500 text-gray-900 font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all mt-8 hover:bg-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.3)] ring-1 ring-emerald-400/50"
+                            className="w-full flex items-center justify-center gap-3 py-4 px-6 rounded-2xl bg-blue-600 text-white font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all mt-8 hover:bg-blue-700 shadow-lg shadow-blue-200"
                         >
-                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -tranzinc-x-full group-hover:animate-shimmer" />
                             {loading ? (
                                 <RefreshCw className="w-6 h-6 animate-spin" />
                             ) : (
@@ -221,11 +208,11 @@ export const Login: React.FC<LoginProps> = ({ onStart }) => {
                             <button
                                 type="button"
                                 onClick={() => setIsSignUp(!isSignUp)}
-                                className="text-sm font-bold text-gray-500 hover:text-gray-900 transition-colors tracking-wide"
+                                className="text-sm font-bold text-gray-400 hover:text-gray-900 transition-colors tracking-wide"
                             >
                                 {isSignUp
-                                    ? "Already registered? Authenticate here."
-                                    : "Need access? Initialize an identity."}
+                                    ? 'Already registered? Authenticate here.'
+                                    : 'Need access? Initialize an identity.'}
                             </button>
                         </div>
 

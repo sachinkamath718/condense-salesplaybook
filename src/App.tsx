@@ -275,27 +275,28 @@ export default function App() {
       try {
         const activeSession = localStorage.getItem('condense_active_session');
         if (activeSession) {
-          const { db } = await import('./lib/firebase');
-          const { doc, getDoc } = await import('firebase/firestore');
-          
-          const userRef = doc(db, 'users', activeSession);
-          const userSnap = await getDoc(userRef);
-          
-          if (!userSnap.exists()) {
+          const { supabase } = await import('./lib/supabase');
+          const { data, error } = await supabase
+            .from('users')
+            .select('username, company_code')
+            .eq('username', activeSession)
+            .single();
+
+          if (error || !data) {
             localStorage.removeItem('condense_active_session');
             localStorage.removeItem('condense_active_company');
             setUser(null);
             window.location.hash = '';
           } else {
-             const userData = userSnap.data();
-             if (userData.companyCode !== localStorage.getItem('condense_active_company')) {
-                localStorage.setItem('condense_active_company', userData.companyCode);
-                setUser(prev => prev ? { ...prev, company: userData.companyCode } : null);
-             }
+            const storedCompany = localStorage.getItem('condense_active_company');
+            if (data.company_code !== storedCompany) {
+              localStorage.setItem('condense_active_company', data.company_code);
+              setUser(prev => prev ? { ...prev, company: data.company_code } : null);
+            }
           }
         }
       } catch (e) {
-        console.error("Failed to restore session", e);
+        console.error('Failed to restore session', e);
       }
     };
 
