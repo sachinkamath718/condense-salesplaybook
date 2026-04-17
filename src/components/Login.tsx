@@ -100,8 +100,8 @@ export const Login: React.FC<LoginProps> = ({ onStart }) => {
         <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6 relative overflow-hidden">
             {/* Subtle light background blobs */}
             <div className="absolute inset-0 z-0 pointer-events-none">
-                <div className="absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] rounded-full bg-blue-100/40 blur-[150px]" />
-                <div className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-indigo-100/40 blur-[120px]" />
+                <div className="absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] rounded-full bg-emerald-100/40 blur-[150px]" />
+                <div className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-teal-100/40 blur-[120px]" />
             </div>
 
             <div className="z-10 w-full max-w-[480px] relative">
@@ -111,11 +111,11 @@ export const Login: React.FC<LoginProps> = ({ onStart }) => {
                     transition={{ duration: 0.7, ease: 'easeOut' }}
                     className="text-center mb-10"
                 >
-                    <div className="inline-flex items-center justify-center p-4 rounded-[2rem] bg-gradient-to-br from-blue-50 to-indigo-100 text-blue-600 mb-8 border border-blue-200 shadow-md">
+                    <div className="inline-flex items-center justify-center p-4 rounded-[2rem] bg-gradient-to-br from-blue-50 to-emerald-100 text-emerald-600 mb-8 border border-emerald-200 shadow-md">
                         <Cpu className="w-12 h-12" />
                     </div>
                     <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-gray-900 mb-3">
-                        Condense<span className="text-blue-600">.</span>
+                        Condense<span className="text-emerald-600">.</span>
                     </h1>
                     <p className="text-gray-500 text-lg font-medium tracking-widest uppercase">
                         Enterprise Playbook
@@ -135,7 +135,7 @@ export const Login: React.FC<LoginProps> = ({ onStart }) => {
                         )}
 
                         <div className="space-y-2 group">
-                            <label htmlFor="name" className="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1 flex items-center gap-2 transition-colors group-focus-within:text-blue-600">
+                            <label htmlFor="name" className="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1 flex items-center gap-2 transition-colors group-focus-within:text-emerald-600">
                                 <ShieldCheck className="w-3.5 h-3.5" /> Full Identity
                             </label>
                             <input
@@ -144,7 +144,7 @@ export const Login: React.FC<LoginProps> = ({ onStart }) => {
                                 required
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
-                                className="w-full px-5 py-4 rounded-2xl bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all font-medium text-lg"
+                                className="w-full px-5 py-4 rounded-2xl bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all font-medium text-lg"
                                 placeholder="E.g. John Doe"
                             />
                         </div>
@@ -166,7 +166,7 @@ export const Login: React.FC<LoginProps> = ({ onStart }) => {
                                         required={isSignUp}
                                         value={company}
                                         onChange={(e) => setCompany(e.target.value)}
-                                        className="w-full px-5 py-4 rounded-2xl bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all font-medium text-lg"
+                                        className="w-full px-5 py-4 rounded-2xl bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all font-medium text-lg"
                                         placeholder="Enter access code..."
                                     />
                                 </motion.div>
@@ -174,7 +174,7 @@ export const Login: React.FC<LoginProps> = ({ onStart }) => {
                         </AnimatePresence>
 
                         <div className="space-y-2 group">
-                            <label htmlFor="passcode" className="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1 flex items-center gap-2 mt-2 transition-colors group-focus-within:text-blue-600">
+                            <label htmlFor="passcode" className="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1 flex items-center gap-2 mt-2 transition-colors group-focus-within:text-emerald-600">
                                 <Key className="w-3.5 h-3.5" /> Secure Passcode
                             </label>
                             <input
@@ -183,7 +183,7 @@ export const Login: React.FC<LoginProps> = ({ onStart }) => {
                                 required
                                 value={passcode}
                                 onChange={(e) => setPasscode(e.target.value)}
-                                className="w-full px-5 py-4 rounded-2xl bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all font-medium text-lg tracking-widest"
+                                className="w-full px-5 py-4 rounded-2xl bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all font-medium text-lg tracking-widest"
                                 placeholder="••••••••"
                             />
                         </div>
@@ -193,7 +193,7 @@ export const Login: React.FC<LoginProps> = ({ onStart }) => {
                             whileTap={{ scale: 0.98 }}
                             type="submit"
                             disabled={loading || !name.trim() || !passcode.trim() || (isSignUp && !company.trim())}
-                            className="w-full flex items-center justify-center gap-3 py-4 px-6 rounded-2xl bg-blue-600 text-white font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all mt-8 hover:bg-blue-700 shadow-lg shadow-blue-200"
+                            className="w-full flex items-center justify-center gap-3 py-4 px-6 rounded-2xl bg-emerald-600 text-white font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all mt-8 hover:bg-emerald-700 shadow-lg shadow-emerald-200"
                         >
                             {loading ? (
                                 <RefreshCw className="w-6 h-6 animate-spin" />

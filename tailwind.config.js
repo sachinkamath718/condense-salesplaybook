@@ -10,26 +10,26 @@ export default {
                 border: "hsl(var(--border))",
                 input: "hsl(var(--input))",
                 ring: "hsl(var(--ring))",
-                background: "#f9fafb", // gray-50 — light page bg
-                foreground: "#111827", // gray-900 — dark text
+                background: "#f9fafb",
+                foreground: "#111827",
                 primary: {
-                    DEFAULT: "#2563eb", // blue-600
+                    DEFAULT: "#10b981", // emerald-500
                     foreground: "#ffffff",
                 },
                 secondary: {
-                    DEFAULT: "#f3f4f6", // gray-100
-                    foreground: "#1f2937", // gray-800
+                    DEFAULT: "#f3f4f6",
+                    foreground: "#1f2937",
                 },
                 destructive: {
-                    DEFAULT: "#ef4444", // red-500
+                    DEFAULT: "#ef4444",
                     foreground: "#ffffff",
                 },
                 muted: {
-                    DEFAULT: "#f9fafb", // gray-50
-                    foreground: "#6b7280", // gray-500
+                    DEFAULT: "#f9fafb",
+                    foreground: "#6b7280",
                 },
                 accent: {
-                    DEFAULT: "#2563eb", // blue-600
+                    DEFAULT: "#10b981", // emerald-500
                     foreground: "#ffffff",
                 },
                 success: {
