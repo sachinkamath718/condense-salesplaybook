@@ -136,15 +136,10 @@ function AppContent({ user, setUser }: { user: UserInfo | null, setUser: (u: Use
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, [user]);
 
-  const handleLogin = (name: string, company: string, isReturning: boolean) => {
+  const handleLogin = (name: string, company: string, _isReturning: boolean) => {
     setUser({ name, company });
-    if (isReturning) {
-      window.location.hash = 'dashboard';
-      setCurrentView('dashboard');
-    } else {
-      window.location.hash = ''; // clear for welcome
-      setCurrentView('welcome');
-    }
+    window.location.hash = 'dashboard';
+    setCurrentView('dashboard');
   };
 
   const handleLogout = () => {
