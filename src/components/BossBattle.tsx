@@ -396,7 +396,7 @@ const PERSONAS: Record<string, PersonaDef> = {
         color: 'red',
         scoreToWin: 3,
         initialMessage: "Who is this? My EA said someone from 'Condense' was trying to breach my calendar regarding our Kafka costs. AWS MSK is astronomical. What's the bottom line?",
-        keywords: ['tco', 'cost', 'byoc', 'vpc', 'security', 'compliance', 'msk', 'confluent', 'savings', 'sla', 'enterprise', 'data residency', 'cheaper', 'secure', 'inside our vpc', 'infra cost', 'infra-only', 'no per-message'],
+        keywords: ['tco', 'cost', 'byoc', 'vpc', 'security', 'compliance', 'msk', 'confluent', 'savings', 'sla', 'enterprise', 'data residency', 'cheaper', 'secure', 'inside our vpc', 'infra cost', 'infra-only', 'no per-message', '$', 'dollars', 'percent', '%', 'per month', 'monthly', 'save', 'pricing', 'infra only', 'no message fee', 'no fees', 'flat', 'fixed cost'],
         stageContext: [
             "Current concern: How much cheaper is Condense vs AWS MSK at 50TB/month? Resolved by mentioning: infra-only pricing, no per-message fees, or BYOC cost model.",
             "Current concern: Does data stay in our VPC or leave our cloud? Resolved by mentioning: BYOC, data stays in VPC, or no data leaving their infrastructure.",
@@ -487,9 +487,18 @@ export const BossBattle: React.FC<BossBattleProps> = ({ onComplete, onBack }) =>
                 ooc:         raw.ooc === true,
             };
         } catch {
+            // API threw — fall through to keyword check below
+        }
+
+        // Keyword fallback: always runs after eval (whether it succeeded or threw).
+        // If the AI scored fail/near but a fresh keyword matches, upgrade to pass.
+        // This prevents the bot getting stuck when valid keywords get graded too harshly.
+        if (evalResult.result !== 'pass' && !evalResult.ooc) {
             const kw = scoreKeyword(userText, selectedPersona, usedKeywords);
             if (kw.hit) {
                 evalResult.result = 'pass';
+                evalResult.relevance = Math.max(evalResult.relevance, 1);
+                evalResult.specificity = Math.max(evalResult.specificity, 1);
                 setUsedKeywords(kw.newUsed);
             }
         }
