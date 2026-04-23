@@ -491,14 +491,15 @@ export const BossBattle: React.FC<BossBattleProps> = ({ onComplete, onBack }) =>
         }
 
         // Keyword fallback: always runs after eval (whether it succeeded or threw).
-        // If the AI scored fail/near but a fresh keyword matches, upgrade to pass.
-        // This prevents the bot getting stuck when valid keywords get graded too harshly.
-        if (evalResult.result !== 'pass' && !evalResult.ooc) {
+        // Intentionally ignores ooc — a single keyword like "byoc" or "vpc" is a
+        // valid short answer and should always advance the conversation.
+        if (evalResult.result !== 'pass') {
             const kw = scoreKeyword(userText, selectedPersona, usedKeywords);
             if (kw.hit) {
                 evalResult.result = 'pass';
                 evalResult.relevance = Math.max(evalResult.relevance, 1);
                 evalResult.specificity = Math.max(evalResult.specificity, 1);
+                evalResult.ooc = false;
                 setUsedKeywords(kw.newUsed);
             }
         }
