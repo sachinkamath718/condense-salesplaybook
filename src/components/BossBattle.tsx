@@ -396,7 +396,7 @@ const PERSONAS: Record<string, PersonaDef> = {
         color: 'red',
         scoreToWin: 3,
         initialMessage: "Who is this? My EA said someone from 'Condense' was trying to breach my calendar regarding our Kafka costs. AWS MSK is astronomical. What's the bottom line?",
-        keywords: ['tco', 'cost', 'byoc', 'vpc', 'security', 'compliance', 'msk', 'confluent', 'savings', 'sla', 'enterprise', 'data residency', 'cheaper', 'secure', 'inside our vpc', 'infra cost', 'infra-only', 'no per-message', '$', 'dollars', 'percent', '%', 'per month', 'monthly', 'save', 'pricing', 'infra only', 'no message fee', 'no fees', 'flat', 'fixed cost'],
+        keywords: ['tco', 'cost', 'byoc', 'vpc', 'security', 'compliance', 'msk', 'confluent', 'savings', 'sla', 'enterprise', 'data residency', 'cheaper', 'secure', 'inside our vpc', 'infra cost', 'infra-only', 'no per-message', '$', 'dollars', 'percent', '%', 'per month', 'monthly', 'save', 'pricing', 'infra only', 'no message fee', 'no fees', 'flat', 'fixed cost', 'your cloud', 'your infrastructure', 'never leaves', 'stays in', 'data stays', 'own cloud', 'dedicated support', 'support team', 'on-call', 'remediation', '24/7', 'sla guarantee'],
         stageContext: [
             "Current concern: How much cheaper is Condense vs AWS MSK at 50TB/month? Resolved by mentioning: infra-only pricing, no per-message fees, or BYOC cost model.",
             "Current concern: Does data stay in our VPC or leave our cloud? Resolved by mentioning: BYOC, data stays in VPC, or no data leaving their infrastructure.",
@@ -404,8 +404,8 @@ const PERSONAS: Record<string, PersonaDef> = {
         ],
         fallbackResponses: [
             "I need numbers. How does Condense compare to AWS MSK at 50TB per month?",
-            "BYOC is interesting. But who handles compliance audits — our team or yours?",
-            "Fair. What is the SLA? If this goes down at 2am, what is our remediation path?",
+            "Does our data leave our cloud at any point, or does this run entirely inside our own VPC?",
+            "If this goes down at 2am on a Sunday — who do we call and what is our remediation path?",
             "You have answered my three questions. Let us connect on a call."
         ],
         closingMessage: "You've answered my three questions: cost clarity, data sovereignty in our own VPC, and enterprise support path. Let's connect on a call — I'll bring our security architect.",
