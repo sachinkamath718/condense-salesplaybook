@@ -41,8 +41,6 @@ interface PersonaDef {
 }
 
 // ─── SYSTEM PROMPTS ────────────────────────────────────────────────────────
-// Passed as system_instruction to Gemini — completely separate from chat turns.
-// This is what keeps the bot in character across the entire conversation.
 const SYSTEM_PROMPTS: Record<string, string> = {
     developer: `
 You are Alex Rivera, Senior Backend Engineer at a mid-size fintech company.
@@ -188,9 +186,7 @@ Resolved when trainee mentions: enterprise support, SLA, dedicated support path,
 };
 
 // ─── EVAL SYSTEM PROMPT ────────────────────────────────────────────────────
-// Sent to Gemini as system_instruction for /api/evaluate.
-// Result is NEVER shown to the trainee — only used to shape the bot's next response.
-const _EVAL_SYSTEM = "...";
+const _EVAL_SYSTEM = `
 You are an internal sales coach evaluating a trainee's pitch response.
 Your output is NEVER shown to the trainee. It is used only to instruct the prospect's next reply.
 
@@ -235,8 +231,6 @@ ooc = true if the message is any of:
 `;
 
 // ─── BEHAVIOR BLOCK BUILDER ────────────────────────────────────────────────
-// Appended invisibly to the user's turn before sending to Gemini.
-// Tells the bot exactly how to respond based on eval. Trainee never sees this.
 function buildBehaviorBlock(
     evalResult: EvalResult,
     persona: PersonaDef,
@@ -425,14 +419,12 @@ export const BossBattle: React.FC<BossBattleProps> = ({ onComplete, onBack }) =>
     const [gamePhase, setGamePhase] = useState<'selecting' | 'playing'>('selecting');
     const [selectedPersona, setSelectedPersona] = useState<PersonaDef | null>(null);
 
-    // Conversation stored as real message turns — NOT a text blob
     const [messages, setMessages] = useState<Message[]>([]);
     const [inputValue, setInputValue] = useState('');
     const [isTyping, setIsTyping] = useState(false);
     const [turnsLeft, setTurnsLeft] = useState(6);
     const [battleStatus, setBattleStatus] = useState<'playing' | 'won' | 'lost'>('playing');
 
-    // Internal scoring — never surfaced to the trainee
     const [score, setScore] = useState(0);
     const [usedKeywords, setUsedKeywords] = useState<Set<string>>(new Set());
     const [consecutiveFails, setConsecutiveFails] = useState(0);
@@ -469,7 +461,7 @@ export const BossBattle: React.FC<BossBattleProps> = ({ onComplete, onBack }) =>
         setMessages(prev => [...prev, newUserMessage]);
         setIsTyping(true);
 
-        // ── STEP 1: Silent eval — result never shown to trainee ──────────
+        // ── STEP 1: Silent eval ──────────────────────────────────────────
         let evalResult: EvalResult = {
             relevance: 0, specificity: 0,
             result: 'fail', hint: '', ooc: false
@@ -494,7 +486,6 @@ export const BossBattle: React.FC<BossBattleProps> = ({ onComplete, onBack }) =>
                 ooc:         raw.ooc === true,
             };
         } catch {
-            // Keyword fallback if eval API fails
             const kw = scoreKeyword(userText, selectedPersona, usedKeywords);
             if (kw.hit) {
                 evalResult.result = 'pass';
@@ -502,7 +493,7 @@ export const BossBattle: React.FC<BossBattleProps> = ({ onComplete, onBack }) =>
             }
         }
 
-        // ── STEP 2: Update internal counters (invisible to trainee) ──────
+        // ── STEP 2: Update internal counters ────────────────────────────
         const newOocCount = evalResult.ooc ? oocCount + 1 : Math.max(0, oocCount - 1);
         setOocCount(newOocCount);
 
@@ -536,15 +527,10 @@ export const BossBattle: React.FC<BossBattleProps> = ({ onComplete, onBack }) =>
 
         try {
             if (isWin) {
-                // WIN: we inject the closing directly — Gemini is not involved
                 finalBotText = selectedPersona.closingMessage;
             } else if (isLastTurn) {
-                // OUT OF TURNS: we inject dismissal — Gemini is not involved
                 finalBotText = selectedPersona.dismissalMessage;
             } else {
-                // Build real conversation history for Gemini
-                // Current user turn has the hidden behavior block appended
-                // Trainee never sees the behavior block — only Gemini does
                 const conversationForApi = messages
                     .filter(m => m.role === 'user' || m.role === 'model')
                     .map(m => ({ role: m.role, content: m.content }));
@@ -592,7 +578,7 @@ export const BossBattle: React.FC<BossBattleProps> = ({ onComplete, onBack }) =>
                 setMessages(prev => [...prev, newBotMessage]);
             }
 
-            // ── STEP 5: OUR CODE decides win/loss — NOT Gemini ───────────
+            // ── STEP 5: Win/loss logic ────────────────────────────────────
             if (isWin) {
                 setBattleStatus('won');
                 if (!completedMissions.includes('boss-battle')) addXP(2000);
@@ -795,7 +781,6 @@ export const BossBattle: React.FC<BossBattleProps> = ({ onComplete, onBack }) =>
                         <div className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-500 text-sm font-bold tracking-wider border border-emerald-500/30">
                             LEVEL {level} {getLevelTitle(level)}
                         </div>
-                        {/* Score dots — no raw numbers shown to trainee */}
                         <div className="flex gap-1.5">
                             {[...Array(scoreToWin)].map((_, i) => (
                                 <div
@@ -808,7 +793,6 @@ export const BossBattle: React.FC<BossBattleProps> = ({ onComplete, onBack }) =>
                                 />
                             ))}
                         </div>
-                        {/* Patience bar */}
                         <div className="flex gap-1.5">
                             {[...Array(selectedPersona?.patience ?? 6)].map((_, i) => (
                                 <div
