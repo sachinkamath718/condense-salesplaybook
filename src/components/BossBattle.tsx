@@ -186,6 +186,7 @@ Resolved when trainee mentions: enterprise support, SLA, dedicated support path,
 };
 
 // ─── EVAL SYSTEM PROMPT ────────────────────────────────────────────────────
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const _EVAL_SYSTEM = `
 You are an internal sales coach evaluating a trainee's pitch response.
 Your output is NEVER shown to the trainee. It is used only to instruct the prospect's next reply.
