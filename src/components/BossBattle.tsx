@@ -144,7 +144,7 @@ You are a PROSPECT in a sales roleplay. A trainee cold-interrupted your calendar
 
 ## YOUR PERSONALITY
 - Extremely direct and time-conscious. No small talk. No patience for fluff.
-- You care about exactly 3 things: total cost, data sovereignty, and enterprise support.
+- You care about exactly 3 things: total cost, data sovereignty, and whether your team has to manage the infra.
 - You are deeply cynical about vendor promises. You need proof, not claims.
 - You warm up ONLY when someone gives you hard, specific answers.
 
@@ -165,8 +165,8 @@ Resolved when trainee mentions: infra-only pricing, no per-message fees, BYOC co
 CONCERN 2: "Does our data leave our cloud at any point, or does this run inside our own VPC?"
 Resolved when trainee clearly states: BYOC, data stays in VPC, or no data leaving their infrastructure.
 
-CONCERN 3: "If this goes down at 2am on a Sunday — who do we call and what is our remediation path?"
-Resolved when trainee mentions: enterprise support, SLA, dedicated support path, or managed reliability.
+CONCERN 3: "Is this fully managed, or does my team have to babysit the infrastructure?"
+Resolved when trainee mentions: fully managed, no ops overhead, Condense handles infrastructure, auto-scaling, or BYOC.
 
 ## HOW TO RESPOND
 - No specifics → cut them off: "That is not an answer. Give me a number, a policy, or a name."
@@ -423,19 +423,19 @@ const PERSONAS: Record<string, PersonaDef> = {
         color: 'red',
         scoreToWin: 3,
         initialMessage: "Who is this? My EA said someone from 'Condense' was trying to breach my calendar regarding our Kafka costs. AWS MSK is astronomical. What's the bottom line?",
-        keywords: ['tco', 'cost', 'byoc', 'vpc', 'security', 'compliance', 'msk', 'confluent', 'savings', 'sla', 'enterprise', 'data residency', 'cheaper', 'secure', 'inside our vpc', 'infra cost', 'infra-only', 'no per-message', '$', 'dollars', 'percent', '%', 'per month', 'monthly', 'save', 'pricing', 'infra only', 'no message fee', 'no fees', 'flat', 'fixed cost', 'your cloud', 'your infrastructure', 'never leaves', 'stays in', 'data stays', 'own cloud', 'dedicated support', 'support team', 'on-call', 'remediation', '24/7', 'sla guarantee'],
+        keywords: ['tco', 'cost', 'byoc', 'vpc', 'security', 'compliance', 'msk', 'confluent', 'savings', 'sla', 'enterprise', 'data residency', 'cheaper', 'secure', 'inside our vpc', 'infra cost', 'infra-only', 'no per-message', '$', 'dollars', 'percent', '%', 'per month', 'monthly', 'save', 'pricing', 'infra only', 'no message fee', 'no fees', 'flat', 'fixed cost', 'your cloud', 'your infrastructure', 'never leaves', 'stays in', 'data stays', 'own cloud', 'managed', 'fully managed', 'no ops', 'auto-scale', 'auto scale', 'handles infra', 'no tuning', 'no maintenance', 'hands off', 'zero ops'],
         stageContext: [
             "Current concern: How much cheaper is Condense vs AWS MSK at 50TB/month? Resolved by mentioning: infra-only pricing, no per-message fees, or BYOC cost model.",
             "Current concern: Does data stay in our VPC or leave our cloud? Resolved by mentioning: BYOC, data stays in VPC, or no data leaving their infrastructure.",
-            "Current concern: 2am outage — who do we call, what is the remediation path? Resolved by mentioning: enterprise support, SLA, or dedicated support path.",
+            "Current concern: Is this fully managed or does our team need to manage the infrastructure? Resolved by mentioning: fully managed, no ops overhead, Condense handles infra, or auto-scaling.",
         ],
         fallbackResponses: [
             "I need numbers. How does Condense compare to AWS MSK at 50TB per month?",
             "Does our data leave our cloud at any point, or does this run entirely inside our own VPC?",
-            "If this goes down at 2am on a Sunday — who do we call and what is our remediation path?",
+            "Is this fully managed, or does my team still have to tune and babysit the infrastructure?",
             "You have answered my three questions. Let us connect on a call."
         ],
-        closingMessage: "You've answered my three questions: cost clarity, data sovereignty in our own VPC, and enterprise support path. Let's connect on a call — I'll bring our security architect.",
+        closingMessage: "You've answered my three questions: cost clarity, data sovereignty in our own VPC, and fully managed infrastructure. Let's connect on a call — I'll bring our security architect.",
         dismissalMessage: "We've moved too far from what this meeting was about. Thank you — let's reconnect when the conversation can stay focused on business requirements."
     }
 };
