@@ -190,7 +190,7 @@ Resolved when trainee mentions: enterprise support, SLA, dedicated support path,
 // ─── EVAL SYSTEM PROMPT ────────────────────────────────────────────────────
 // Sent to Gemini as system_instruction for /api/evaluate.
 // Result is NEVER shown to the trainee — only used to shape the bot's next response.
-const EVAL_SYSTEM = `
+const _EVAL_SYSTEM = "...";
 You are an internal sales coach evaluating a trainee's pitch response.
 Your output is NEVER shown to the trainee. It is used only to instruct the prospect's next reply.
 
