@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { collection, getDocs, orderBy, query } from 'firebase/firestore';
-import { db } from '../lib/firebase';
+import { supabase } from '../lib/supabase';
 import { Trophy, Target, BookOpen, AlertCircle, RefreshCw, Bot, Cpu } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 
@@ -27,31 +26,30 @@ export const AdminDashboard: React.FC = () => {
     const fetchUsers = async () => {
         try {
             setLoading(true);
-            const q = query(collection(db, "users"), orderBy(sortField, "desc"));
-            const querySnapshot = await getDocs(q);
+            const { data, error: fetchError } = await supabase
+                .from('users')
+                .select('*')
+                .order(sortField === 'modulesCompleted' ? 'modules_completed' : sortField, { ascending: false });
 
-            const fetchedUsers: UserData[] = [];
-            querySnapshot.forEach((doc) => {
-                const data = doc.data();
-                fetchedUsers.push({
-                    id: doc.id,
-                    username: data.username || 'Unknown',
-                    companyCode: data.companyCode || '-',
-                    xp: data.xp || 0,
-                    accuracy: data.accuracy || 0,
-                    modulesCompleted: data.modulesCompleted || 0,
-                    lastActive: data.lastActive ? data.lastActive.toDate() : new Date(),
-                    quizResults: data.quizResults || {},
-                    chatTranscripts: data.chatTranscripts || {}
-                });
-            });
+            if (fetchError) throw fetchError;
+
+            const fetchedUsers: UserData[] = (data || []).map((row) => ({
+                id: row.id,
+                username: row.username || 'Unknown',
+                companyCode: row.company_code || '-',
+                xp: row.xp || 0,
+                accuracy: row.accuracy || 0,
+                modulesCompleted: row.modules_completed || 0,
+                lastActive: row.last_active ? new Date(row.last_active) : new Date(),
+                quizResults: row.quiz_results || {},
+                chatTranscripts: row.chat_transcripts || {}
+            }));
 
             setUsers(fetchedUsers);
             setError(null);
         } catch (err: unknown) {
-            console.error("Error fetching admin data:", err);
-            // We don't want to crash if Firebase isn't set up yet, we'll just show empty state
-            setError("Telemetry Fetch Error: If you see 'Permission Denied' in console, please update your Firestore Rules to allow 'list' on the users collection. Also verify VERCEL environment keys.");
+            console.error('Error fetching admin data:', err);
+            setError('Telemetry Fetch Error: Could not connect to Supabase. Verify VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are set in Vercel environment variables.');
         } finally {
             setLoading(false);
         }
